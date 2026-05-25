@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* Yellow & White palette */
+  --color-background-primary:    #ffffff;
+  --color-background-secondary:  #f5f5f0;
+  --color-background-tertiary:   #f0ede8;
+  --color-border-tertiary:       #e8e5e0;
+  --color-border-secondary:      #d0cdc8;
+  --color-border-info:           #FFD600;
+  --color-border-danger:         #e53935;
+
+  --color-text-primary:          #111111;
+  --color-text-secondary:        #666666;
+  --color-text-info:             #111111;
+  --color-text-success:          #1b5e20;
+  --color-text-danger:           #b71c1c;
+  --color-text-warning:          #7a5200;
+
+  --color-background-info:       #FFD600;
+  --color-background-success:    #c8e6c9;
+  --color-background-danger:     #ffcdd2;
+  --color-background-warning:    #fff9c4;
+
+  --yellow:    #FFD600;
+  --yellow-dk: #F5C800;
+  --black:     #111111;
+}
+
+body {
+  background: var(--color-background-tertiary);
+  color: var(--color-text-primary);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+button { font-family: inherit; }
+input, select, textarea { font-family: inherit; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #ddd; border-radius: 3px; }
