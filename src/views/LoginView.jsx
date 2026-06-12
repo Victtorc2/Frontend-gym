@@ -12,7 +12,8 @@ export default function LoginView({ onLogin }) {
     setError("");
     try {
       const res = await api.post("/api/auth/login", form);
-      api.token = res.data.access_token;
+      api.setToken(res.data.access_token);
+      localStorage.setItem("gym_user", JSON.stringify(res.data));
       onLogin(res.data);
     } catch (err) {
       setError(err.message);

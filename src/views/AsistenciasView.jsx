@@ -32,7 +32,7 @@ export default function AsistenciasView() {
       const r = res.data;
       setLastResult(r);
       if (r.acceso_permitido) {
-        setSuccess(`Acceso autorizado para cliente #${r.cliente_id}`);
+        setSuccess(`Acceso autorizado para ${r.nombre_cliente}`);
       } else {
         setError(`Acceso denegado: ${r.motivo}`);
       }
@@ -61,7 +61,7 @@ export default function AsistenciasView() {
                   <StatusBadge estado={a.estado} />
                 </div>
                 <p style={{ margin: 0, fontSize: 12, color: C.textSec }}>
-                  {a.fecha_hora} · {a.codigo_tarjeta}
+                  {a.fecha} {a.hora}
                   {a.motivo_denegacion && ` · ${a.motivo_denegacion}`}
                 </p>
               </div>

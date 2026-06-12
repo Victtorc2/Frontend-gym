@@ -1,7 +1,15 @@
 const API_BASE = "http://localhost:8000";
 
 const api = {
-  token: null,
+  // El token se inicializa desde localStorage para mantener la sesión tras un refresh.
+  token: localStorage.getItem("gym_token") || null,
+
+  setToken(token) {
+    this.token = token || null;
+    if (token) localStorage.setItem("gym_token", token);
+    else localStorage.removeItem("gym_token");
+  },
+
   async request(method, path, body) {
     const headers = { "Content-Type": "application/json" };
     if (this.token) headers["Authorization"] = `Bearer ${this.token}`;
@@ -10,6 +18,11 @@ const api = {
       headers,
       body: body ? JSON.stringify(body) : undefined,
     });
+    // Sesión expirada o inválida: limpiamos credenciales locales.
+    if (res.status === 401) {
+      api.setToken(null);
+      localStorage.removeItem("gym_user");
+    }
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || "Error en la solicitud");
     return data;

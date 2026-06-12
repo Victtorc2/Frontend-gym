@@ -7,9 +7,9 @@ export default function ClientesDiariosView() {
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState(false);
-  const [ingresoModal, setIngresoModal] = useState(null);
-  const [form, setForm] = useState({ nombre: "", documento: "", telefono: "" });
-  const [ingresoForm, setIngresoForm] = useState({ monto: "" });
+  const [pagoModal, setPagoModal] = useState(null);
+  const [form, setForm] = useState({ nombre: "", documento: "" });
+  const [pagoForm, setPagoForm] = useState({ monto: "" });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -29,7 +29,10 @@ export default function ClientesDiariosView() {
     e.preventDefault();
     setSaving(true); setError(""); setSuccess("");
     try {
-      await api.post("/api/clientes-diarios", form);
+      // El backend solo acepta nombre y documento (documento opcional)
+      const payload = { nombre: form.nombre };
+      if (form.documento?.trim()) payload.documento = form.documento.trim();
+      await api.post("/api/clientes-diarios", payload);
       setSuccess("Cliente diario registrado");
       load();
       setTimeout(() => setModal(false), 1500);
@@ -37,17 +40,16 @@ export default function ClientesDiariosView() {
     setSaving(false);
   };
 
-  const registerIngreso = async (e) => {
+  const registerPago = async (e) => {
     e.preventDefault();
     setSaving(true); setError(""); setSuccess("");
     try {
-      await api.post("/api/ingresos-diarios", {
-        cliente_diario_id: ingresoModal.id,
-        monto: parseFloat(ingresoForm.monto),
+      await api.post(`/api/clientes-diarios/${pagoModal.id}/pago`, {
+        monto: parseFloat(pagoForm.monto),
       });
-      setSuccess("Ingreso registrado");
+      setSuccess("Pago registrado");
       load();
-      setTimeout(() => setIngresoModal(null), 1500);
+      setTimeout(() => setPagoModal(null), 1500);
     } catch (err) { setError(err.message); }
     setSaving(false);
   };
@@ -56,7 +58,7 @@ export default function ClientesDiariosView() {
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem", flexWrap: "wrap", gap: 8 }}>
         <h2 style={{ margin: 0, fontSize: 18, fontWeight: 500 }}>Clientes diarios</h2>
-        <Btn variant="primary" onClick={() => { setForm({ nombre: "", documento: "", telefono: "" }); setError(""); setSuccess(""); setModal(true); }}>
+        <Btn variant="primary" onClick={() => { setForm({ nombre: "", documento: "" }); setError(""); setSuccess(""); setModal(true); }}>
           <i className="ti ti-plus" /> Nuevo cliente diario
         </Btn>
       </div>
@@ -72,11 +74,10 @@ export default function ClientesDiariosView() {
                 </div>
                 <p style={{ margin: 0, fontSize: 12, color: C.textSec }}>
                   {c.documento ? `Doc: ${c.documento}` : "Sin documento"}
-                  {c.telefono ? ` · Tel: ${c.telefono}` : ""}
                 </p>
               </div>
-              <Btn variant="primary" onClick={() => { setIngresoForm({ monto: "" }); setError(""); setSuccess(""); setIngresoModal(c); }}>
-                <i className="ti ti-cash" /> Registrar ingreso
+              <Btn variant="primary" onClick={() => { setPagoForm({ monto: "" }); setError(""); setSuccess(""); setPagoModal(c); }}>
+                <i className="ti ti-cash" /> Registrar pago
               </Btn>
             </Card>
           ))}
@@ -88,7 +89,6 @@ export default function ClientesDiariosView() {
           <form onSubmit={saveClient} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             <Input label="Nombre" value={form.nombre} onChange={e => setForm(f => ({ ...f, nombre: e.target.value }))} required />
             <Input label="Documento (opcional)" value={form.documento} onChange={e => setForm(f => ({ ...f, documento: e.target.value }))} />
-            <Input label="Teléfono (opcional)" value={form.telefono} onChange={e => setForm(f => ({ ...f, telefono: e.target.value }))} />
             {error && <Alert>{error}</Alert>}
             {success && <Alert type="success">{success}</Alert>}
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
@@ -99,15 +99,15 @@ export default function ClientesDiariosView() {
         </Modal>
       )}
 
-      {ingresoModal && (
-        <Modal title={`Registrar ingreso – ${ingresoModal.nombre}`} onClose={() => setIngresoModal(null)}>
-          <form onSubmit={registerIngreso} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <Input label="Monto (S/.)" type="number" step="0.01" value={ingresoForm.monto} onChange={e => setIngresoForm(f => ({ ...f, monto: e.target.value }))} required placeholder="Ej: 5.00" />
+      {pagoModal && (
+        <Modal title={`Registrar pago – ${pagoModal.nombre}`} onClose={() => setPagoModal(null)}>
+          <form onSubmit={registerPago} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <Input label="Monto (S/.)" type="number" step="0.01" value={pagoForm.monto} onChange={e => setPagoForm(f => ({ ...f, monto: e.target.value }))} required placeholder="Ej: 5.00" />
             {error && <Alert>{error}</Alert>}
             {success && <Alert type="success">{success}</Alert>}
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
-              <Btn onClick={() => setIngresoModal(null)}>Cancelar</Btn>
-              <Btn type="submit" variant="primary" loading={saving}>Registrar ingreso</Btn>
+              <Btn onClick={() => setPagoModal(null)}>Cancelar</Btn>
+              <Btn type="submit" variant="primary" loading={saving}>Registrar pago</Btn>
             </div>
           </form>
         </Modal>

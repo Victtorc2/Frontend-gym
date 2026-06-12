@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { C } from "./styles/colors";
 import api from "./services/api";
 
 import LoginView from "./views/LoginView";
@@ -29,9 +28,24 @@ const VIEWS = {
 };
 
 export default function App() {
-  const [auth, setAuth] = useState(null);
+  // Restaura la sesión guardada (token + datos del usuario) tras un refresh.
+  const [auth, setAuth] = useState(() => {
+    if (!api.token) return null;
+    try {
+      const stored = localStorage.getItem("gym_user");
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  });
   const [view, setView] = useState("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  const logout = () => {
+    api.setToken(null);
+    localStorage.removeItem("gym_user");
+    setAuth(null);
+  };
 
   if (!auth) return <LoginView onLogin={setAuth} />;
 
@@ -273,11 +287,11 @@ export default function App() {
                   fontWeight: 600,
                   fontFamily: "'Barlow', sans-serif",
                   color: "#111",
-                }}>Admin</span>
+                }}>{auth.nombre || "Admin"}</span>
               </div>
               <button
                 className="logout-btn"
-                onClick={() => { api.token = null; setAuth(null); }}
+                onClick={logout}
                 style={{
                   padding: "8px 16px",
                   background: "#111111",

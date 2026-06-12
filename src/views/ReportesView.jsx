@@ -6,15 +6,15 @@ import api from "../services/api";
 const endpoints = {
   activos: "/api/reportes/clientes/activos",
   deuda: "/api/reportes/clientes/deuda",
-  ingresos: "/api/reportes/ingresos/periodo",
-  membresias: "/api/reportes/membresias",
+  pagos: "/api/reportes/pagos/resumen",
+  membresias: "/api/reportes/membresias/vigentes",
 };
 
 const labels = {
   activos: "Clientes activos",
   deuda: "Clientes con deuda",
-  ingresos: "Ingresos del período",
-  membresias: "Estado de membresías",
+  pagos: "Resumen de pagos",
+  membresias: "Membresías vigentes",
 };
 
 export default function ReportesView() {
