@@ -7,21 +7,21 @@ import { C } from "../styles/colors";
 import { Card, Spinner, EmptyState, PageHeader, StatCard } from "../components";
 import api from "../services/api";
 
-const AXIS_COLOR = "#9a9a9a";
-const GRID_COLOR = "#2c2c2c";
+const AXIS_COLOR = "#666666";
+const GRID_COLOR = "#e0e0e0";
 
 const TOOLTIP_STYLE = {
-  contentStyle: { background: "#232323", border: "1px solid #3a3a3a", borderRadius: 8 },
-  labelStyle: { color: "#f5f5f5" },
-  itemStyle: { color: "#f5f5f5" },
+  contentStyle: { background: "#ffffff", border: "1px solid #e0e0e0", borderRadius: 8 },
+  labelStyle: { color: "#1a1a1a" },
+  itemStyle: { color: "#1a1a1a" },
 };
-const LEGEND_STYLE = { color: "#9a9a9a" };
+const LEGEND_STYLE = { color: "#666666" };
 
 const DIA_ORDER = ["lunes", "martes", "miercoles", "jueves", "viernes", "sabado"];
 const DIA_LABELS = { lunes: "Lun", martes: "Mar", miercoles: "Mié", jueves: "Jue", viernes: "Vie", sabado: "Sáb" };
 
 const TIPO_LABELS = { mensual: "Mensual", anual: "Anual", diario: "Diario" };
-const TIPO_COLORS = { mensual: "#FFD600", anual: "#BDBDBD", diario: "#42a5f5" };
+const TIPO_COLORS = { mensual: "#FFD600", anual: "#757575", diario: "#42a5f5" };
 
 const ACTIVIDAD_LABELS = { activo: "Activo", poco_activo: "Poco activo", inactivo: "Inactivo" };
 const ACTIVIDAD_COLORS = { activo: "#4caf50", poco_activo: "#FFD600", inactivo: "#9e9e9e" };

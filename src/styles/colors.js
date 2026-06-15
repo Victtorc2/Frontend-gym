@@ -28,8 +28,8 @@ export const statusBadgeType = {
 };
 
 const heatColors = {
-  BAJA:  { bg: "rgba(74, 222, 128, 0.12)", border: "#4ade80", text: "#86efac" },
-  MEDIA: { bg: "rgba(255, 214, 0, 0.10)",  border: "#FFD600", text: "#FFD600" },
-  ALTA:  { bg: "rgba(248, 113, 113, 0.14)", border: "#f87171", text: "#fca5a5" },
+  BAJA:  { bg: "rgba(34, 197, 94, 0.10)",  border: "#22c55e", text: "#15803d" },
+  MEDIA: { bg: "rgba(255, 214, 0, 0.16)",  border: "#FFD600", text: "#9a7400" },
+  ALTA:  { bg: "rgba(239, 68, 68, 0.10)",  border: "#ef4444", text: "#b91c1c" },
 };
 export const heatColor = (nivel) => heatColors[nivel] || { bg: C.bgSec, border: C.border, text: C.textSec };

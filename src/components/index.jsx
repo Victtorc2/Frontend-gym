@@ -22,7 +22,7 @@ export const Badge = ({ children, type = "info" }) => {
       fontFamily: "'Barlow Condensed', sans-serif",
       letterSpacing: "0.04em",
       textTransform: "uppercase",
-      border: type === "info" ? "none" : "1px solid rgba(255,255,255,0.08)",
+      border: type === "info" ? "none" : `1px solid ${C.border}`,
     }}>
       {children}
     </span>
@@ -42,7 +42,7 @@ export const Card = ({ children, style, className }) => (
     border: `1px solid ${C.border}`,
     borderRadius: 12,
     padding: "1.25rem",
-    boxShadow: "0 2px 10px rgba(0,0,0,0.35)",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
     ...style,
   }}>
     {children}
@@ -380,7 +380,7 @@ export const EmptyState = ({ icon, text }) => (
       justifyContent: "center",
       marginBottom: 12,
     }}>
-      <i className={`ti ti-${icon}`} style={{ fontSize: 28, color: "#FFD600" }} />
+      <i className={`ti ti-${icon}`} style={{ fontSize: 28, color: "#E6AC00" }} />
     </div>
     <p style={{ margin: 0, fontSize: 14 }}>{text}</p>
   </div>
@@ -399,7 +399,7 @@ export const Modal = ({ title, onClose, children, width = 500 }) => (
       background: C.bg,
       borderRadius: 16,
       border: `1px solid ${C.border}`,
-      boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
+      boxShadow: "0 20px 60px rgba(0,0,0,0.15)",
       width: "100%", maxWidth: width,
       maxHeight: "90vh", overflow: "auto",
     }}>

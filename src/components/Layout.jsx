@@ -20,10 +20,10 @@ export default function Layout({ nav, views, auth, logout }) {
           overflow: hidden;
         }
         .nav-btn:hover {
-          background: rgba(255,255,255,0.08) !important;
+          background: rgba(255,214,0,0.10) !important;
           transform: translateX(2px);
         }
-        .nav-btn:hover .nav-label { color: #ffffff !important; }
+        .nav-btn:hover .nav-label { color: #1a1a1a !important; }
         .nav-btn:hover .nav-icon  { color: #FFD600 !important; }
         .nav-btn.active {
           background: linear-gradient(135deg, #FFD600 0%, #FFC000 100%) !important;
@@ -78,14 +78,14 @@ export default function Layout({ nav, views, auth, logout }) {
         {/* ── Sidebar ── */}
         <aside style={{
           width: sidebarOpen ? 240 : 64,
-          background: "#0a0a0a",
+          background: C.bg,
           display: "flex",
           flexDirection: "column",
           transition: "width 0.22s cubic-bezier(0.4,0,0.2,1)",
           flexShrink: 0,
           position: "relative",
           zIndex: 10,
-          borderRight: "1px solid #1f1f1f",
+          borderRight: `1px solid ${C.border}`,
         }}>
 
           {/* Logo */}
@@ -94,9 +94,9 @@ export default function Layout({ nav, views, auth, logout }) {
             display: "flex",
             alignItems: "center",
             gap: 12,
-            borderBottom: "1px solid #1e1e1e",
+            borderBottom: `1px solid ${C.border}`,
             justifyContent: sidebarOpen ? "flex-start" : "center",
-            background: "#0A0A0A",
+            background: C.bg,
           }}>
             <div style={{
               width: 38, height: 38,
@@ -113,12 +113,11 @@ export default function Layout({ nav, views, auth, logout }) {
                 fontFamily: "'Barlow Condensed', sans-serif",
                 fontWeight: 800,
                 fontSize: 24,
-                color: "#FFFFFF",
+                color: C.text,
                 letterSpacing: "0.08em",
                 whiteSpace: "nowrap",
-                textShadow: "0 1px 8px rgba(255,214,0,0.3)",
               }}>
-                GYM<span style={{ color: "#FFD600" }}>WARRIOR</span>
+                GYM<span style={{ color: "#E6AC00" }}>WARRIOR</span>
               </span>
             )}
           </div>
@@ -162,7 +161,7 @@ export default function Layout({ nav, views, auth, logout }) {
                   style={{
                     fontSize: 19,
                     flexShrink: 0,
-                    color: view === n.id ? "#111" : "#666",
+                    color: view === n.id ? "#111" : "#888",
                     transition: "color 0.18s",
                   }}
                 />
@@ -176,7 +175,7 @@ export default function Layout({ nav, views, auth, logout }) {
                       fontWeight: view === n.id ? 700 : 500,
                       fontSize: 14,
                       letterSpacing: "0.01em",
-                      color: view === n.id ? "#111" : "#BBBBBB",
+                      color: view === n.id ? "#111" : "#666",
                       transition: "color 0.18s",
                     }}
                   >
@@ -188,7 +187,7 @@ export default function Layout({ nav, views, auth, logout }) {
           </nav>
 
           {/* Toggle */}
-          <div style={{ padding: "0.75rem 0.6rem", borderTop: "1px solid #1a1a1a" }}>
+          <div style={{ padding: "0.75rem 0.6rem", borderTop: `1px solid ${C.border}` }}>
             <button
               className="sidebar-toggle"
               onClick={() => setSidebarOpen(o => !o)}
@@ -196,7 +195,7 @@ export default function Layout({ nav, views, auth, logout }) {
                 display: "flex", alignItems: "center", justifyContent: "center",
                 width: "100%", padding: "9px",
                 background: "transparent",
-                border: "1px solid #2a2a2a",
+                border: `1px solid ${C.border}`,
                 cursor: "pointer",
                 color: "#555",
                 borderRadius: 8,
@@ -221,7 +220,7 @@ export default function Layout({ nav, views, auth, logout }) {
             justifyContent: "space-between",
             alignItems: "center",
             flexShrink: 0,
-            boxShadow: "0 1px 4px rgba(0,0,0,0.3)",
+            boxShadow: "0 1px 4px rgba(0,0,0,0.05)",
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               <div style={{
@@ -270,8 +269,8 @@ export default function Layout({ nav, views, auth, logout }) {
                 style={{
                   padding: "8px 16px",
                   background: "transparent",
-                  color: "#FFD600",
-                  border: "1px solid #FFD600",
+                  color: C.text,
+                  border: `1px solid ${C.borderSec}`,
                   borderRadius: 10,
                   cursor: "pointer",
                   fontSize: 13,

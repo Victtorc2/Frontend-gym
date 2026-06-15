@@ -137,7 +137,7 @@ export default function LoginView({ onLogin }) {
               fontWeight: 800, fontSize: 18,
               color: C.text, letterSpacing: "0.08em",
             }}>
-              GYM<span style={{ color: "#FFD600" }}>WARRIOR</span>
+              GYM<span style={{ color: "#E6AC00" }}>WARRIOR</span>
             </span>
           </div>
 
@@ -205,9 +205,9 @@ export default function LoginView({ onLogin }) {
 
             {error && (
               <div style={{
-                background: "rgba(248,113,113,0.14)",
-                color: "#f87171",
-                border: "1px solid rgba(248,113,113,0.35)",
+                background: "rgba(239, 68, 68, 0.10)",
+                color: "#dc2626",
+                border: "1px solid rgba(239, 68, 68, 0.25)",
                 padding: "11px 14px",
                 borderRadius: 10,
                 fontSize: 13,
