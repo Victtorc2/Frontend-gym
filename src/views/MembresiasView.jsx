@@ -19,7 +19,7 @@ export default function MembresiasView() {
 
   // Cargar lista de clientes para mostrar nombres
   useEffect(() => {
-    api.get("/api/clientes?per_page=200&page=1")
+    api.get("/api/clientes?per_page=100&page=1")
       .then(res => {
         // El API puede devolver distintas estructuras
         const lista =

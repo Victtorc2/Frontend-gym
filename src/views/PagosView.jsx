@@ -29,7 +29,7 @@ export default function PagosView() {
   const [success, setSuccess] = useState("");
 
   useEffect(() => {
-    api.get("/api/clientes?per_page=200&page=1")
+    api.get("/api/clientes?per_page=100&page=1")
       .then(res => {
         const lista = res?.data?.items || res?.items || (Array.isArray(res?.data) ? res.data : null) || (Array.isArray(res) ? res : []);
         setClientes(lista);
