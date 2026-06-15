@@ -1,10 +1,7 @@
 import { useState, useEffect } from "react";
 import { C } from "../../styles/colors";
-import { Card, Badge, Spinner, EmptyState } from "../../components";
+import { Row, Badge, Spinner, EmptyState, PageHeader, StatCard, Avatar } from "../../components";
 import api from "../../services/api";
-
-const statLabel = { fontSize: 12, color: C.textSec, textTransform: "uppercase", letterSpacing: "0.06em" };
-const statValue = { fontSize: 28, fontWeight: 800, fontFamily: "'Barlow Condensed', sans-serif", marginTop: 4 };
 
 export default function MiAsistenciaView() {
   const [asistencia, setAsistencia] = useState(null);
@@ -30,53 +27,45 @@ export default function MiAsistenciaView() {
 
   return (
     <div>
-      <div style={{ marginBottom: "1.5rem" }}>
-        <h2 style={{ margin: 0, fontSize: 18, fontWeight: 500 }}>Mi Asistencia</h2>
-      </div>
+      <PageHeader icon="activity" title="Mi asistencia" subtitle="Tu historial de ingresos al gimnasio" />
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 16, marginBottom: 20 }}>
-        <Card>
-          <div style={statLabel}>Total asistencias</div>
-          <div style={statValue}>{asistencia.total_asistencias}</div>
-        </Card>
-        <Card>
-          <div style={statLabel}>Aprobadas</div>
-          <div style={{ ...statValue, color: "#2e7d32" }}>{asistencia.total_aprobados}</div>
-        </Card>
-        <Card>
-          <div style={statLabel}>Denegadas</div>
-          <div style={{ ...statValue, color: "#c62828" }}>{asistencia.total_denegados}</div>
-        </Card>
-        {frecuencia && (
-          <Card>
-            <div style={statLabel}>Frecuencia semanal</div>
-            <div style={statValue}>{frecuencia.frecuencia_semanal}</div>
-          </Card>
-        )}
+        <StatCard icon="activity" label="Total asistencias" value={asistencia.total_asistencias} color="#FFD600" />
+        <StatCard icon="circle-check" label="Aprobadas" value={asistencia.total_aprobados} color="#66bb6a" />
+        <StatCard icon="circle-x" label="Denegadas" value={asistencia.total_denegados} color="#ef5350" />
+        {frecuencia && <StatCard icon="calendar-stats" label="Frecuencia semanal" value={frecuencia.frecuencia_semanal} color="#42a5f5" />}
       </div>
 
       {frecuencia && (
-        <Card style={{ marginBottom: 20 }}>
-          <div style={{ display: "flex", gap: 24, flexWrap: "wrap", fontSize: 13 }}>
-            <span>Ingresos este mes: <b>{frecuencia.asistencias_mes_actual}</b></span>
-            <span>Primer ingreso: <b>{frecuencia.primer_ingreso || "—"}</b></span>
-            <span>Último ingreso: <b>{frecuencia.ultimo_ingreso || "—"}</b></span>
-          </div>
-        </Card>
+        <div style={{ display: "flex", gap: 24, flexWrap: "wrap", fontSize: 13, marginBottom: 20, color: C.textSec }}>
+          <span>Ingresos este mes: <b style={{ color: C.text }}>{frecuencia.asistencias_mes_actual}</b></span>
+          <span>Primer ingreso: <b style={{ color: C.text }}>{frecuencia.primer_ingreso || "—"}</b></span>
+          <span>Último ingreso: <b style={{ color: C.text }}>{frecuencia.ultimo_ingreso || "—"}</b></span>
+        </div>
       )}
 
-      <h3 style={{ fontSize: 14, fontWeight: 600, marginBottom: 8 }}>Historial</h3>
+      <h3 style={{ fontSize: 14, fontWeight: 700, marginBottom: 8, fontFamily: "'Barlow Condensed', sans-serif", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+        Historial
+      </h3>
       {asistencia.historial.length === 0 ? <EmptyState icon="activity" text="Aún no tienes registros de asistencia" /> : (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {asistencia.historial.map(h => (
-            <Card key={h.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8, padding: "0.75rem 1rem" }}>
-              <span style={{ fontSize: 13 }}>{h.fecha} · {h.hora}</span>
-              <Badge type={h.estado === "ingreso_aprobado" ? "success" : "danger"}>
-                {h.estado === "ingreso_aprobado" ? "Aprobado" : "Denegado"}
-              </Badge>
-              {h.motivo_denegacion && <span style={{ fontSize: 12, color: C.textSec }}>{h.motivo_denegacion}</span>}
-            </Card>
-          ))}
+          {asistencia.historial.map(h => {
+            const aprobado = h.estado === "ingreso_aprobado";
+            return (
+              <Row key={h.id}>
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <Avatar color={aprobado ? "#dcfce7" : "#fee2e2"}>
+                    <i className={`ti ti-${aprobado ? "circle-check" : "circle-x"}`} style={{ fontSize: 18, color: aprobado ? "var(--color-text-success)" : "var(--color-text-danger)" }} />
+                  </Avatar>
+                  <div>
+                    <span style={{ fontSize: 13, fontWeight: 600 }}>{h.fecha} · {h.hora}</span>
+                    {h.motivo_denegacion && <p style={{ margin: "2px 0 0", fontSize: 12, color: C.textSec }}>{h.motivo_denegacion}</p>}
+                  </div>
+                </div>
+                <Badge type={aprobado ? "success" : "danger"}>{aprobado ? "Aprobado" : "Denegado"}</Badge>
+              </Row>
+            );
+          })}
         </div>
       )}
     </div>

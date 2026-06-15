@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { C } from "../styles/colors";
-import { Card, Badge, Btn, Input, Select, Alert, Spinner, EmptyState, Modal, StatusBadge } from "../components";
+import { Row, Badge, Btn, Input, Select, FilterSelect, Alert, Spinner, EmptyState, Modal, StatusBadge, PageHeader, Avatar } from "../components";
 import api from "../services/api";
 
 const tipoColor = { mensual: "info", anual: "success", diario: "warning" };
@@ -67,48 +67,58 @@ export default function MembresiasView() {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem", flexWrap: "wrap", gap: 8 }}>
-        <h2 style={{ margin: 0, fontSize: 18, fontWeight: 500 }}>Membresías</h2>
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <select value={filterTipo} onChange={e => setFilterTipo(e.target.value)} style={{ padding: "7px 10px", borderRadius: 8, border: `0.5px solid ${C.borderSec}`, background: C.bg, color: C.text, fontSize: 13 }}>
-            <option value="">Todos los tipos</option>
-            <option value="mensual">Mensual</option>
-            <option value="anual">Anual</option>
-            <option value="diario">Diario</option>
-          </select>
-          <select value={filterEstado} onChange={e => setFilterEstado(e.target.value)} style={{ padding: "7px 10px", borderRadius: 8, border: `0.5px solid ${C.borderSec}`, background: C.bg, color: C.text, fontSize: 13 }}>
-            <option value="">Todos los estados</option>
-            <option value="activa">Activa</option>
-            <option value="vencida">Vencida</option>
-            <option value="pendiente">Pendiente</option>
-          </select>
-          <Btn variant="primary" onClick={() => { setForm({ cliente_id: "", tipo: "mensual", precio: "" }); setError(""); setSuccess(""); setModal(true); }}>
-            <i className="ti ti-plus" /> Nueva membresía
-          </Btn>
-        </div>
-      </div>
+      <PageHeader
+        icon="id-badge"
+        title="Membresías"
+        subtitle={`${mems.length} membresías encontradas`}
+        actions={
+          <>
+            <FilterSelect value={filterTipo} onChange={e => setFilterTipo(e.target.value)}>
+              <option value="">Todos los tipos</option>
+              <option value="mensual">Mensual</option>
+              <option value="anual">Anual</option>
+              <option value="diario">Diario</option>
+            </FilterSelect>
+            <FilterSelect value={filterEstado} onChange={e => setFilterEstado(e.target.value)}>
+              <option value="">Todos los estados</option>
+              <option value="activa">Activa</option>
+              <option value="vencida">Vencida</option>
+              <option value="pendiente">Pendiente</option>
+            </FilterSelect>
+            <Btn variant="primary" onClick={() => { setForm({ cliente_id: "", tipo: "mensual", precio: "" }); setError(""); setSuccess(""); setModal(true); }}>
+              <i className="ti ti-plus" /> Nueva membresía
+            </Btn>
+          </>
+        }
+      />
 
       {loading ? <Spinner /> : mems.length === 0 ? <EmptyState icon="id-badge" text="No se encontraron membresías" /> : (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {mems.map(m => (
-            <Card key={m.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
-              <div>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                  <span style={{ fontWeight: 500, fontSize: 14 }}>{getNombreCliente(m.cliente_id)}</span>
-                  <Badge type={tipoColor[m.tipo] || "neutral"}>{m.tipo}</Badge>
-                  <StatusBadge estado={m.estado} />
+          {mems.map(m => {
+            const nombre = getNombreCliente(m.cliente_id);
+            return (
+              <Row key={m.id}>
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <Avatar>{nombre.slice(0, 2).toUpperCase()}</Avatar>
+                  <div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                      <span style={{ fontWeight: 600, fontSize: 14 }}>{nombre}</span>
+                      <Badge type={tipoColor[m.tipo] || "neutral"}>{m.tipo}</Badge>
+                      <StatusBadge estado={m.estado} />
+                    </div>
+                    <p style={{ margin: 0, fontSize: 12, color: C.textSec }}>
+                      {m.fecha_inicio} → {m.fecha_fin} · S/. {m.precio}
+                    </p>
+                  </div>
                 </div>
-                <p style={{ margin: 0, fontSize: 12, color: C.textSec }}>
-                  {m.fecha_inicio} → {m.fecha_fin} · S/. {m.precio}
-                </p>
-              </div>
-              <div style={{ display: "flex", gap: 8 }}>
-                <Btn onClick={() => api.get(`/api/tarjetas/cliente/${m.cliente_id}`).then(r => alert(JSON.stringify(r.data, null, 2))).catch(err => alert(err.message))}>
-                  <i className="ti ti-credit-card" /> Tarjetas
-                </Btn>
-              </div>
-            </Card>
-          ))}
+                <div style={{ display: "flex", gap: 8 }}>
+                  <Btn onClick={() => api.get(`/api/tarjetas/cliente/${m.cliente_id}`).then(r => alert(JSON.stringify(r.data, null, 2))).catch(err => alert(err.message))}>
+                    <i className="ti ti-credit-card" /> Tarjetas
+                  </Btn>
+                </div>
+              </Row>
+            );
+          })}
         </div>
       )}
 

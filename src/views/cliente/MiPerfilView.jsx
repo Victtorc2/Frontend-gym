@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { C } from "../../styles/colors";
-import { Card, Badge, Spinner, EmptyState, StatusBadge } from "../../components";
+import { Card, Badge, Spinner, EmptyState, StatusBadge, PageHeader, DetailField, Avatar } from "../../components";
 import api from "../../services/api";
 
 export default function MiPerfilView() {
@@ -23,50 +22,37 @@ export default function MiPerfilView() {
 
   return (
     <div>
-      <div style={{ marginBottom: "1.5rem" }}>
-        <h2 style={{ margin: 0, fontSize: 18, fontWeight: 500 }}>Mi Perfil</h2>
-      </div>
+      <PageHeader icon="user" title="Mi perfil" subtitle="Información personal de tu cuenta" />
 
-      <Card style={{ maxWidth: 520 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20 }}>
-          <div style={{
-            width: 64, height: 64, borderRadius: "50%",
-            background: "linear-gradient(135deg, #FFD600, #FF9900)",
-            display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-          }}>
-            <i className="ti ti-user" style={{ fontSize: 30, color: "#111" }} />
-          </div>
+      <Card style={{ maxWidth: 560 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 18, marginBottom: 24 }}>
+          <Avatar size={64}>{(perfil.nombres[0] + perfil.apellidos[0]).toUpperCase()}</Avatar>
           <div>
-            <div style={{ fontSize: 20, fontWeight: 700, fontFamily: "'Barlow Condensed', sans-serif" }}>
+            <div style={{
+              fontSize: 22, fontWeight: 800,
+              fontFamily: "'Barlow Condensed', sans-serif",
+              textTransform: "uppercase", letterSpacing: "0.02em",
+            }}>
               {perfil.nombres} {perfil.apellidos}
             </div>
-            <div style={{ display: "flex", gap: 6, marginTop: 4 }}>
+            <div style={{ display: "flex", gap: 6, marginTop: 6 }}>
               <StatusBadge estado={perfil.estado} />
               <Badge type="neutral">{perfil.grupo_edad}</Badge>
             </div>
           </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-          <Field label="DNI" value={perfil.dni} />
-          <Field label="Edad" value={`${perfil.edad} años`} />
-          <Field label="Correo" value={perfil.correo} />
-          <Field label="Teléfono" value={perfil.telefono} />
-          <Field label="Sexo" value={perfil.sexo} />
-          <Field label="Ocupación" value={perfil.ocupacion || "—"} />
-          <Field label="Dirección" value={perfil.direccion || "—"} />
-          <Field label="Miembro desde" value={miembroDesde} />
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+          <DetailField label="DNI" value={perfil.dni} />
+          <DetailField label="Edad" value={`${perfil.edad} años`} />
+          <DetailField label="Correo" value={perfil.correo} />
+          <DetailField label="Teléfono" value={perfil.telefono} />
+          <DetailField label="Sexo" value={perfil.sexo} />
+          <DetailField label="Ocupación" value={perfil.ocupacion || "—"} />
+          <DetailField label="Dirección" value={perfil.direccion || "—"} />
+          <DetailField label="Miembro desde" value={miembroDesde} />
         </div>
       </Card>
-    </div>
-  );
-}
-
-function Field({ label, value }) {
-  return (
-    <div>
-      <div style={{ fontSize: 11, color: C.textSec, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>{label}</div>
-      <div style={{ fontSize: 14, color: C.text }}>{value}</div>
     </div>
   );
 }

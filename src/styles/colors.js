@@ -28,3 +28,10 @@ export const statusBadgeType = {
   aprobado: "success",
   denegado: "danger",
 };
+
+const heatColors = {
+  BAJA:  { bg: "#e8f5e9", border: "#4caf50", text: "#2e7d32" },
+  MEDIA: { bg: "#fff8e1", border: "#FFD600", text: "#8a6d00" },
+  ALTA:  { bg: "#ffebee", border: "#e53935", text: "#c62828" },
+};
+export const heatColor = (nivel) => heatColors[nivel] || { bg: C.bgSec, border: C.border, text: C.textSec };

@@ -4,7 +4,7 @@ import {
   PieChart, Pie, Cell, Legend,
 } from "recharts";
 import { C } from "../styles/colors";
-import { Card, Spinner, EmptyState } from "../components";
+import { Card, Spinner, EmptyState, PageHeader, StatCard } from "../components";
 import api from "../services/api";
 
 const AXIS_COLOR = "#666666";
@@ -102,82 +102,23 @@ export default function DashboardView() {
   }, []);
 
   const metrics = [
-    { icon: "users",            label: "Clientes totales",   value: stats?.totalClientes },
-    { icon: "id-badge",         label: "Membresías activas", value: stats?.membresíasActivas },
-    { icon: "activity",         label: "Total asistencias",  value: stats?.totalAsistencias },
-    { icon: "user-check",       label: "Clientes activos",   value: stats?.clientesActivos },
-    { icon: "cash",             label: "Ingresos totales",   value: stats?.ingresosTotales != null ? formatSoles(stats.ingresosTotales) : "—" },
-    { icon: "alert-triangle",   label: "Clientes con deuda", value: stats?.clientesConDeuda },
+    { icon: "users",          label: "Clientes totales",   value: stats?.totalClientes, color: "#FFD600" },
+    { icon: "id-badge",       label: "Membresías activas", value: stats?.membresíasActivas, color: "#42a5f5" },
+    { icon: "activity",       label: "Total asistencias",  value: stats?.totalAsistencias, color: "#66bb6a" },
+    { icon: "user-check",     label: "Clientes activos",   value: stats?.clientesActivos, color: "#ab47bc" },
+    { icon: "cash",           label: "Ingresos totales",   value: stats?.ingresosTotales != null ? formatSoles(stats.ingresosTotales) : "—", color: "#26a69a" },
+    { icon: "alert-triangle", label: "Clientes con deuda", value: stats?.clientesConDeuda, color: "#ef5350" },
   ];
 
   return (
     <div>
-      <div style={{ marginBottom: "1.75rem", display: "flex", alignItems: "baseline", gap: 12 }}>
-        <h2 style={{
-          fontSize: 32,
-          fontFamily: "'Barlow Condensed', sans-serif",
-          fontWeight: 800,
-          color: C.black,
-        }}>PANEL PRINCIPAL</h2>
-        <span style={{ fontSize: 14, color: C.textSec }}>Resumen general del sistema</span>
-      </div>
+      <PageHeader icon="layout-dashboard" title="Panel principal" subtitle="Resumen general del sistema" />
 
       {loading ? <Spinner /> : (
         <>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16, marginBottom: 24 }}>
-            {metrics.map((m, i) => (
-              <div key={m.label} style={{
-                background: i % 2 === 0 ? "#FFD600" : C.black,
-                borderRadius: 16,
-                padding: "1.5rem",
-                display: "flex",
-                flexDirection: "column",
-                gap: 12,
-                position: "relative",
-                overflow: "hidden",
-              }}>
-                <div style={{
-                  position: "absolute", right: -8, bottom: -8,
-                  opacity: 0.1,
-                }}>
-                  <i className={`ti ti-${m.icon}`} style={{ fontSize: 80, color: i % 2 === 0 ? "#000" : "#fff" }} />
-                </div>
-
-                <div style={{
-                  width: 36, height: 36,
-                  background: i % 2 === 0 ? "rgba(0,0,0,0.12)" : "rgba(255,255,255,0.12)",
-                  borderRadius: 8,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                }}>
-                  <i className={`ti ti-${m.icon}`} style={{
-                    fontSize: 18,
-                    color: i % 2 === 0 ? "#111" : "#FFD600",
-                  }} />
-                </div>
-
-                <div>
-                  <div style={{
-                    fontSize: 32,
-                    fontWeight: 800,
-                    fontFamily: "'Barlow Condensed', sans-serif",
-                    color: i % 2 === 0 ? "#111" : "#fff",
-                    lineHeight: 1,
-                    marginBottom: 4,
-                  }}>
-                    {m.value ?? "—"}
-                  </div>
-                  <div style={{
-                    fontSize: 12,
-                    fontWeight: 600,
-                    color: i % 2 === 0 ? "rgba(0,0,0,0.6)" : "rgba(255,255,255,0.6)",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.06em",
-                    fontFamily: "'Barlow Condensed', sans-serif",
-                  }}>
-                    {m.label}
-                  </div>
-                </div>
-              </div>
+            {metrics.map(m => (
+              <StatCard key={m.label} icon={m.icon} label={m.label} value={m.value ?? "—"} color={m.color} />
             ))}
           </div>
 

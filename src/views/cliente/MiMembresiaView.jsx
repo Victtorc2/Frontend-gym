@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { C } from "../../styles/colors";
-import { Card, Badge, Spinner, EmptyState, StatusBadge } from "../../components";
+import { Card, Badge, Spinner, EmptyState, StatusBadge, PageHeader, StatCard } from "../../components";
 import api from "../../services/api";
 
 const tipoColor = { mensual: "info", anual: "success", diario: "warning" };
@@ -23,9 +23,7 @@ export default function MiMembresiaView() {
   if (!data || data.tiene_membresia === false) {
     return (
       <div>
-        <div style={{ marginBottom: "1.5rem" }}>
-          <h2 style={{ margin: 0, fontSize: 18, fontWeight: 500 }}>Mi Membresía</h2>
-        </div>
+        <PageHeader icon="id-badge" title="Mi membresía" subtitle="Estado de tu membresía actual" />
         <EmptyState icon="id-badge" text={data?.mensaje || "No tienes una membresía activa en este momento"} />
       </div>
     );
@@ -33,33 +31,29 @@ export default function MiMembresiaView() {
 
   return (
     <div>
-      <div style={{ marginBottom: "1.5rem" }}>
-        <h2 style={{ margin: 0, fontSize: 18, fontWeight: 500 }}>Mi Membresía</h2>
+      <PageHeader icon="id-badge" title="Mi membresía" subtitle="Estado de tu membresía actual" />
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 16, marginBottom: 20 }}>
+        <StatCard icon="calendar-time" label="Días restantes" value={data.dias_restantes} color={data.dias_restantes <= 5 ? "#ef5350" : "#66bb6a"} />
+        <StatCard icon="cash" label="Precio" value={`S/. ${data.precio}`} color="#FFD600" />
+        <StatCard icon="calendar-event" label="Inicio" value={data.fecha_inicio} color="#42a5f5" />
+        <StatCard icon="calendar-check" label="Fin" value={data.fecha_fin} color="#ab47bc" />
       </div>
 
       <Card style={{ maxWidth: 480 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+        <div style={{
+          fontSize: 12, color: C.textSec, fontWeight: 700,
+          textTransform: "uppercase", letterSpacing: "0.06em",
+          marginBottom: 10, fontFamily: "'Barlow Condensed', sans-serif",
+        }}>
+          Tipo de membresía
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <Badge type={tipoColor[data.tipo] || "neutral"}>{data.tipo}</Badge>
           <StatusBadge estado={data.estado} />
           {data.vigente && <Badge type="success">Vigente</Badge>}
         </div>
-
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-          <Field label="Precio" value={`S/. ${data.precio}`} />
-          <Field label="Días restantes" value={data.dias_restantes} />
-          <Field label="Fecha de inicio" value={data.fecha_inicio} />
-          <Field label="Fecha de fin" value={data.fecha_fin} />
-        </div>
       </Card>
-    </div>
-  );
-}
-
-function Field({ label, value }) {
-  return (
-    <div>
-      <div style={{ fontSize: 11, color: C.textSec, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>{label}</div>
-      <div style={{ fontSize: 14, color: C.text }}>{value}</div>
     </div>
   );
 }

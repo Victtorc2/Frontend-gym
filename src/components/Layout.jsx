@@ -50,6 +50,23 @@ export default function Layout({ nav, views, auth, logout }) {
           color: #FFD600 !important;
         }
 
+        .row-card {
+          transition: box-shadow 0.18s, border-color 0.18s, transform 0.12s;
+        }
+        .row-card:hover {
+          box-shadow: 0 6px 18px rgba(0,0,0,0.07);
+          border-color: #FFD600;
+          transform: translateY(-1px);
+        }
+
+        .tab-btn {
+          transition: background 0.15s, color 0.15s, border-color 0.15s;
+        }
+        .tab-btn:hover:not(.active) {
+          border-color: #FFD600 !important;
+          color: #111 !important;
+        }
+
         * { box-sizing: border-box; }
       `}</style>
 

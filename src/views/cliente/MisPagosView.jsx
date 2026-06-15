@@ -1,12 +1,9 @@
 import { useState, useEffect } from "react";
 import { C } from "../../styles/colors";
-import { Card, Badge, Alert, Spinner, EmptyState, StatusBadge } from "../../components";
+import { Row, Badge, Alert, Spinner, EmptyState, StatusBadge, PageHeader, StatCard, Avatar } from "../../components";
 import api from "../../services/api";
 
 const metodoLabel = { efectivo: "Efectivo", transferencia: "Transferencia", yape: "Yape", plin: "Plin" };
-
-const statLabel = { fontSize: 12, color: C.textSec, textTransform: "uppercase", letterSpacing: "0.06em" };
-const statValue = { fontSize: 28, fontWeight: 800, fontFamily: "'Barlow Condensed', sans-serif", marginTop: 4 };
 
 export default function MisPagosView() {
   const [pagos, setPagos] = useState(null);
@@ -32,23 +29,12 @@ export default function MisPagosView() {
 
   return (
     <div>
-      <div style={{ marginBottom: "1.5rem" }}>
-        <h2 style={{ margin: 0, fontSize: 18, fontWeight: 500 }}>Mis Pagos</h2>
-      </div>
+      <PageHeader icon="cash" title="Mis pagos" subtitle="Historial y estado de tus pagos" />
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16, marginBottom: 20 }}>
-        <Card>
-          <div style={statLabel}>Total de pagos</div>
-          <div style={statValue}>{pagos.total_pagos}</div>
-        </Card>
-        <Card>
-          <div style={statLabel}>Total pagado</div>
-          <div style={statValue}>S/. {pagos.total_pagado}</div>
-        </Card>
-        <Card>
-          <div style={statLabel}>Deuda pendiente</div>
-          <div style={{ ...statValue, color: Number(pagos.deuda_pendiente) > 0 ? "#e53935" : C.text }}>S/. {pagos.deuda_pendiente}</div>
-        </Card>
+        <StatCard icon="receipt" label="Total de pagos" value={pagos.total_pagos} color="#42a5f5" />
+        <StatCard icon="cash" label="Total pagado" value={`S/. ${pagos.total_pagado}`} color="#66bb6a" />
+        <StatCard icon="alert-triangle" label="Deuda pendiente" value={`S/. ${pagos.deuda_pendiente}`} color={Number(pagos.deuda_pendiente) > 0 ? "#ef5350" : "#FFD600"} />
       </div>
 
       {deuda?.tiene_deuda && (
@@ -58,22 +44,27 @@ export default function MisPagosView() {
         </Alert>
       )}
 
-      <h3 style={{ fontSize: 14, fontWeight: 600, margin: "20px 0 8px" }}>Historial de pagos</h3>
+      <h3 style={{ fontSize: 14, fontWeight: 700, margin: "20px 0 8px", fontFamily: "'Barlow Condensed', sans-serif", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+        Historial de pagos
+      </h3>
       {pagos.pagos.length === 0 ? <EmptyState icon="cash" text="Aún no tienes pagos registrados" /> : (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {pagos.pagos.map(p => (
-            <Card key={p.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
-              <div>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                  <Badge type="neutral">{metodoLabel[p.metodo_pago] || p.metodo_pago}</Badge>
-                  <StatusBadge estado={p.estado} />
+            <Row key={p.id}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <Avatar><i className="ti ti-receipt-2" style={{ fontSize: 16 }} /></Avatar>
+                <div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                    <Badge type="neutral">{metodoLabel[p.metodo_pago] || p.metodo_pago}</Badge>
+                    <StatusBadge estado={p.estado} />
+                  </div>
+                  <p style={{ margin: 0, fontSize: 12, color: C.textSec }}>
+                    {p.fecha_pago} · S/. {p.monto_pagado} / {p.monto_total}
+                    {Number(p.saldo_pendiente) > 0 && <span style={{ color: C.dangerText }}> · Saldo: S/. {p.saldo_pendiente}</span>}
+                  </p>
                 </div>
-                <p style={{ margin: 0, fontSize: 12, color: C.textSec }}>
-                  {p.fecha_pago} · S/. {p.monto_pagado} / {p.monto_total}
-                  {Number(p.saldo_pendiente) > 0 && <span style={{ color: C.dangerText }}> · Saldo: S/. {p.saldo_pendiente}</span>}
-                </p>
               </div>
-            </Card>
+            </Row>
           ))}
         </div>
       )}

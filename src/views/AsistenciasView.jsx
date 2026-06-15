@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { C } from "../styles/colors";
-import { Card, Btn, Input, Alert, Spinner, EmptyState, Modal, StatusBadge } from "../components";
+import { Row, Btn, Input, Alert, Spinner, EmptyState, Modal, StatusBadge, PageHeader, Avatar } from "../components";
 import api from "../services/api";
 
 export default function AsistenciasView() {
@@ -44,33 +44,41 @@ export default function AsistenciasView() {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem", flexWrap: "wrap", gap: 8 }}>
-        <h2 style={{ margin: 0, fontSize: 18, fontWeight: 500 }}>Asistencias</h2>
-        <Btn variant="primary" onClick={() => { setModal(true); setError(""); setSuccess(""); setLastResult(null); }}>
-          <i className="ti ti-scan" /> Validar ingreso
-        </Btn>
-      </div>
+      <PageHeader
+        icon="activity"
+        title="Asistencias"
+        subtitle="Registro de ingresos validados por tarjeta"
+        actions={
+          <Btn variant="primary" onClick={() => { setModal(true); setError(""); setSuccess(""); setLastResult(null); }}>
+            <i className="ti ti-scan" /> Validar ingreso
+          </Btn>
+        }
+      />
 
       {loading ? <Spinner /> : att.length === 0 ? <EmptyState icon="activity" text="Sin registros de asistencia" /> : (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {att.map(a => (
-            <Card key={a.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
-              <div>
-                <div style={{ display: "flex", gap: 8, marginBottom: 4, alignItems: "center" }}>
-                  <span style={{ fontWeight: 500, fontSize: 14 }}>Cliente #{a.cliente_id}</span>
-                  <StatusBadge estado={a.estado} />
+          {att.map(a => {
+            const aprobado = a.estado === "aprobado";
+            return (
+              <Row key={a.id}>
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <Avatar color={aprobado ? "#dcfce7" : "#fee2e2"}>
+                    <i className={`ti ti-${aprobado ? "circle-check" : "circle-x"}`} style={{ fontSize: 18, color: aprobado ? "var(--color-text-success)" : "var(--color-text-danger)" }} />
+                  </Avatar>
+                  <div>
+                    <div style={{ display: "flex", gap: 8, marginBottom: 4, alignItems: "center" }}>
+                      <span style={{ fontWeight: 600, fontSize: 14 }}>Cliente #{a.cliente_id}</span>
+                      <StatusBadge estado={a.estado} />
+                    </div>
+                    <p style={{ margin: 0, fontSize: 12, color: C.textSec }}>
+                      {a.fecha} · {a.hora}
+                      {a.motivo_denegacion && ` · ${a.motivo_denegacion}`}
+                    </p>
+                  </div>
                 </div>
-                <p style={{ margin: 0, fontSize: 12, color: C.textSec }}>
-                  {a.fecha} {a.hora}
-                  {a.motivo_denegacion && ` · ${a.motivo_denegacion}`}
-                </p>
-              </div>
-              <i
-                className={`ti ti-${a.estado === "aprobado" ? "circle-check" : "circle-x"}`}
-                style={{ fontSize: 22, color: a.estado === "aprobado" ? "var(--color-text-success)" : "var(--color-text-danger)" }}
-              />
-            </Card>
-          ))}
+              </Row>
+            );
+          })}
         </div>
       )}
 

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { C } from "../styles/colors";
-import { Card, Badge, Btn, Input, Select, Alert, Spinner, EmptyState, Modal, StatusBadge } from "../components";
+import { Row, Badge, Btn, Input, Select, FilterInput, Alert, Spinner, EmptyState, Modal, StatusBadge, PageHeader, Avatar } from "../components";
 import api from "../services/api";
 
 export default function ClientesView() {
@@ -102,29 +102,34 @@ export default function ClientesView() {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem", flexWrap: "wrap", gap: 8 }}>
-        <h2 style={{ margin: 0, fontSize: 18, fontWeight: 500 }}>Clientes</h2>
-        <div style={{ display: "flex", gap: 8 }}>
-          <input
-            placeholder="Buscar por nombre..."
-            value={search}
-            onChange={e => { setSearch(e.target.value); setPage(1); }}
-            style={{ padding: "7px 10px", borderRadius: 8, border: `0.5px solid ${C.borderSec}`, background: C.bg, color: C.text, fontSize: 13, width: 200 }}
-          />
-          <Btn variant="primary" onClick={openCreate}><i className="ti ti-plus" /> Nuevo cliente</Btn>
-        </div>
-      </div>
+      <PageHeader
+        icon="users"
+        title="Clientes"
+        subtitle={`${total} clientes registrados`}
+        actions={
+          <>
+            <div style={{ position: "relative" }}>
+              <i className="ti ti-search" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: C.textSec, fontSize: 15 }} />
+              <FilterInput
+                placeholder="Buscar por nombre..."
+                value={search}
+                onChange={e => { setSearch(e.target.value); setPage(1); }}
+                style={{ width: 220, paddingLeft: 34 }}
+              />
+            </div>
+            <Btn variant="primary" onClick={openCreate}><i className="ti ti-plus" /> Nuevo cliente</Btn>
+          </>
+        }
+      />
 
       {loading ? <Spinner /> : clients.length === 0 ? <EmptyState icon="users" text="No se encontraron clientes" /> : (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {clients.map(c => (
-            <Card key={c.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
+            <Row key={c.id}>
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <div style={{ width: 36, height: 36, borderRadius: "50%", background: C.info, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 500, color: C.infoText, flexShrink: 0 }}>
-                  {(c.nombres[0] + c.apellidos[0]).toUpperCase()}
-                </div>
+                <Avatar>{(c.nombres[0] + c.apellidos[0]).toUpperCase()}</Avatar>
                 <div>
-                  <p style={{ margin: 0, fontWeight: 500, fontSize: 14 }}>{c.nombres} {c.apellidos}</p>
+                  <p style={{ margin: 0, fontWeight: 600, fontSize: 14 }}>{c.nombres} {c.apellidos}</p>
                   <p style={{ margin: 0, fontSize: 12, color: C.textSec }}>DNI: {c.dni} · {c.correo}</p>
                 </div>
               </div>
@@ -136,13 +141,16 @@ export default function ClientesView() {
                   {c.estado === "activo" ? "Desactivar" : "Activar"}
                 </Btn>
               </div>
-            </Card>
+            </Row>
           ))}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 8 }}>
             <span style={{ fontSize: 13, color: C.textSec }}>{total} clientes totales</span>
-            <div style={{ display: "flex", gap: 8 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <Btn disabled={page === 1} onClick={() => setPage(p => p - 1)}><i className="ti ti-arrow-left" /></Btn>
-              <span style={{ fontSize: 13, padding: "7px 0", color: C.textSec }}>Pág. {page}</span>
+              <span style={{
+                fontSize: 13, fontWeight: 700, padding: "6px 14px", color: "#111",
+                background: "#FFD600", borderRadius: 8, fontFamily: "'Barlow Condensed', sans-serif",
+              }}>Pág. {page}</span>
               <Btn disabled={clients.length < 20} onClick={() => setPage(p => p + 1)}><i className="ti ti-arrow-right" /></Btn>
             </div>
           </div>

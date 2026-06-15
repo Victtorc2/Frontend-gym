@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { C } from "../styles/colors";
-import { Card, Btn, Input, Alert, Spinner, EmptyState, Modal, StatusBadge } from "../components";
+import { Row, Btn, Input, Alert, Spinner, EmptyState, Modal, StatusBadge, PageHeader, Avatar } from "../components";
 import api from "../services/api";
 
 export default function ClientesDiariosView() {
@@ -56,25 +56,32 @@ export default function ClientesDiariosView() {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem", flexWrap: "wrap", gap: 8 }}>
-        <h2 style={{ margin: 0, fontSize: 18, fontWeight: 500 }}>Clientes diarios</h2>
-        <Btn variant="primary" onClick={() => { setForm({ nombre: "", documento: "" }); setError(""); setSuccess(""); setModal(true); }}>
-          <i className="ti ti-plus" /> Nuevo cliente diario
-        </Btn>
-      </div>
+      <PageHeader
+        icon="user-dollar"
+        title="Clientes diarios"
+        subtitle={`${clients.length} clientes registrados`}
+        actions={
+          <Btn variant="primary" onClick={() => { setForm({ nombre: "", documento: "" }); setError(""); setSuccess(""); setModal(true); }}>
+            <i className="ti ti-plus" /> Nuevo cliente diario
+          </Btn>
+        }
+      />
 
       {loading ? <Spinner /> : clients.length === 0 ? <EmptyState icon="user-dollar" text="Sin clientes diarios registrados" /> : (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {clients.map(c => (
-            <Card key={c.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
-              <div>
-                <div style={{ display: "flex", gap: 8, marginBottom: 4, alignItems: "center" }}>
-                  <span style={{ fontWeight: 500, fontSize: 14 }}>{c.nombre}</span>
-                  <StatusBadge estado={c.estado} />
+            <Row key={c.id}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <Avatar>{c.nombre.slice(0, 2).toUpperCase()}</Avatar>
+                <div>
+                  <div style={{ display: "flex", gap: 8, marginBottom: 4, alignItems: "center" }}>
+                    <span style={{ fontWeight: 600, fontSize: 14 }}>{c.nombre}</span>
+                    <StatusBadge estado={c.estado} />
+                  </div>
+                  <p style={{ margin: 0, fontSize: 12, color: C.textSec }}>
+                    {c.documento ? `Doc: ${c.documento}` : "Sin documento"}
+                  </p>
                 </div>
-                <p style={{ margin: 0, fontSize: 12, color: C.textSec }}>
-                  {c.documento ? `Doc: ${c.documento}` : "Sin documento"}
-                </p>
               </div>
               {c.pago_hoy ? (
                 <Btn disabled style={{ background: C.success, color: C.successText, border: "none" }}>
@@ -85,7 +92,7 @@ export default function ClientesDiariosView() {
                   <i className="ti ti-cash" /> Registrar pago
                 </Btn>
               )}
-            </Card>
+            </Row>
           ))}
         </div>
       )}

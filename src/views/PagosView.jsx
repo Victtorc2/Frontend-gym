@@ -1,12 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { C } from "../styles/colors";
-import { Card, Badge, Btn, Input, Select, Alert, Spinner, EmptyState, Modal } from "../components";
+import { Row, Card, Badge, Btn, Input, Select, FilterSelect, FilterInput, Alert, Spinner, EmptyState, Modal, PageHeader, Avatar } from "../components";
 import api from "../services/api";
 
 const metodoLabel = { efectivo: "Efectivo", transferencia: "Transferencia", yape: "Yape", plin: "Plin" };
 const estadoBadge = { pagado: "success", pendiente: "warning", vencido: "danger" };
 
-const selectStyle = { padding: "7px 10px", borderRadius: 8, border: `0.5px solid ${C.borderSec}`, background: C.bg, color: C.text, fontSize: 13 };
 const labelStyle = { fontSize: 13, fontWeight: 500, color: C.text };
 const selectModalStyle = (value) => ({ padding: "9px 10px", borderRadius: 8, border: `0.5px solid ${C.borderSec}`, background: C.bg, color: value ? C.text : C.textSec, fontSize: 13 });
 
@@ -106,73 +105,89 @@ export default function PagosView() {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem", flexWrap: "wrap", gap: 8 }}>
-        <h2 style={{ margin: 0, fontSize: 18, fontWeight: 500 }}>Pagos</h2>
-        <Btn variant="primary" onClick={() => {
-          setForm({ cliente_id: "", membresia_id: "", monto_total: "", monto_pagado: "", metodo_pago: "efectivo" });
-          setError(""); setSuccess(""); setModal(true);
-        }}>
-          <i className="ti ti-plus" /> Registrar pago
-        </Btn>
-      </div>
+      <PageHeader
+        icon="cash"
+        title="Pagos"
+        subtitle={`${pageInfo.total} pagos registrados`}
+        actions={
+          <Btn variant="primary" onClick={() => {
+            setForm({ cliente_id: "", membresia_id: "", monto_total: "", monto_pagado: "", metodo_pago: "efectivo" });
+            setError(""); setSuccess(""); setModal(true);
+          }}>
+            <i className="ti ti-plus" /> Registrar pago
+          </Btn>
+        }
+      />
 
       <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 16, alignItems: "flex-start" }}>
         <div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
-            <select value={filters.estado} onChange={e => updateFilter("estado", e.target.value)} style={selectStyle}>
+            <FilterSelect value={filters.estado} onChange={e => updateFilter("estado", e.target.value)}>
               <option value="">Todos los estados</option>
               <option value="pagado">Pagado</option>
               <option value="pendiente">Pendiente</option>
               <option value="vencido">Vencido</option>
-            </select>
-            <select value={filters.metodo_pago} onChange={e => updateFilter("metodo_pago", e.target.value)} style={selectStyle}>
+            </FilterSelect>
+            <FilterSelect value={filters.metodo_pago} onChange={e => updateFilter("metodo_pago", e.target.value)}>
               <option value="">Todos los métodos</option>
               <option value="efectivo">Efectivo</option>
               <option value="transferencia">Transferencia</option>
               <option value="yape">Yape</option>
               <option value="plin">Plin</option>
-            </select>
-            <input type="date" value={filters.fecha_desde} onChange={e => updateFilter("fecha_desde", e.target.value)} style={selectStyle} />
-            <input type="date" value={filters.fecha_hasta} onChange={e => updateFilter("fecha_hasta", e.target.value)} style={selectStyle} />
+            </FilterSelect>
+            <FilterInput type="date" value={filters.fecha_desde} onChange={e => updateFilter("fecha_desde", e.target.value)} />
+            <FilterInput type="date" value={filters.fecha_hasta} onChange={e => updateFilter("fecha_hasta", e.target.value)} />
           </div>
 
           {loading ? <Spinner /> : pagos.length === 0 ? <EmptyState icon="cash" text="No se encontraron pagos" /> : (
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {pagos.map(p => (
-                <Card key={p.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
-                  <div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                      <span style={{ fontWeight: 500, fontSize: 14 }}>{getNombreCliente(p.cliente_id)}</span>
-                      <Badge type="neutral">{metodoLabel[p.metodo_pago] || p.metodo_pago}</Badge>
-                      <Badge type={estadoBadge[p.estado] || "neutral"}>{p.estado}</Badge>
+              {pagos.map(p => {
+                const nombre = getNombreCliente(p.cliente_id);
+                return (
+                  <Row key={p.id}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                      <Avatar>{nombre.slice(0, 2).toUpperCase()}</Avatar>
+                      <div>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                          <span style={{ fontWeight: 600, fontSize: 14 }}>{nombre}</span>
+                          <Badge type="neutral">{metodoLabel[p.metodo_pago] || p.metodo_pago}</Badge>
+                          <Badge type={estadoBadge[p.estado] || "neutral"}>{p.estado}</Badge>
+                        </div>
+                        <p style={{ margin: 0, fontSize: 12, color: C.textSec }}>
+                          {p.fecha_pago} · S/. {p.monto_pagado} / {p.monto_total}
+                          {Number(p.saldo_pendiente) > 0 && <span style={{ color: C.dangerText }}> · Saldo: S/. {p.saldo_pendiente}</span>}
+                        </p>
+                      </div>
                     </div>
-                    <p style={{ margin: 0, fontSize: 12, color: C.textSec }}>
-                      {p.fecha_pago} · S/. {p.monto_pagado} / {p.monto_total}
-                      {Number(p.saldo_pendiente) > 0 && <span style={{ color: C.dangerText }}> · Saldo: S/. {p.saldo_pendiente}</span>}
-                    </p>
-                  </div>
-                </Card>
-              ))}
+                  </Row>
+                );
+              })}
             </div>
           )}
 
           {pageInfo.total_pages > 1 && (
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 8, marginTop: 16 }}>
               <Btn disabled={page <= 1} onClick={() => setPage(p => p - 1)}>Anterior</Btn>
-              <span style={{ fontSize: 13, color: C.textSec }}>Página {page} de {pageInfo.total_pages}</span>
+              <span style={{
+                fontSize: 13, fontWeight: 700, padding: "6px 14px", color: "#111",
+                background: "#FFD600", borderRadius: 8, fontFamily: "'Barlow Condensed', sans-serif",
+              }}>Página {page} de {pageInfo.total_pages}</span>
               <Btn disabled={page >= pageInfo.total_pages} onClick={() => setPage(p => p + 1)}>Siguiente</Btn>
             </div>
           )}
         </div>
 
         <div>
-          <h3 style={{ fontSize: 14, fontWeight: 600, marginBottom: 8, color: C.text }}>Clientes con deuda</h3>
+          <h3 style={{ fontSize: 14, fontWeight: 700, marginBottom: 8, color: C.text, fontFamily: "'Barlow Condensed', sans-serif", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+            <i className="ti ti-alert-triangle" style={{ marginRight: 6, color: C.dangerText }} />
+            Clientes con deuda
+          </h3>
           {loadingDeudas ? <Spinner /> : deudas.length === 0 ? <EmptyState icon="circle-check" text="No hay clientes con deuda" /> : (
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {deudas.map(d => (
-                <Card key={d.cliente_id} style={{ padding: "0.85rem 1rem" }}>
-                  <div style={{ fontWeight: 500, fontSize: 13 }}>{d.nombre_cliente}</div>
-                  <div style={{ fontSize: 12, color: C.dangerText, marginTop: 2 }}>Deuda: S/. {d.total_deuda}</div>
+                <Card key={d.cliente_id} style={{ padding: "0.85rem 1rem", borderLeft: "4px solid #ef5350" }}>
+                  <div style={{ fontWeight: 600, fontSize: 13 }}>{d.nombre_cliente}</div>
+                  <div style={{ fontSize: 16, fontWeight: 800, color: C.dangerText, marginTop: 2, fontFamily: "'Barlow Condensed', sans-serif" }}>S/. {d.total_deuda}</div>
                   <div style={{ fontSize: 11, color: C.textSec, marginTop: 2 }}>
                     {d.pagos_pendientes} pago(s) pendiente(s){d.ultimo_pago ? ` · Último: ${d.ultimo_pago}` : ""}
                   </div>
