@@ -76,9 +76,15 @@ export default function ClientesDiariosView() {
                   {c.documento ? `Doc: ${c.documento}` : "Sin documento"}
                 </p>
               </div>
-              <Btn variant="primary" onClick={() => { setPagoForm({ monto: "" }); setError(""); setSuccess(""); setPagoModal(c); }}>
-                <i className="ti ti-cash" /> Registrar pago
-              </Btn>
+              {c.pago_hoy ? (
+                <Btn disabled style={{ background: C.success, color: C.successText, border: "none" }}>
+                  <i className="ti ti-check" /> Cliente ya pagó
+                </Btn>
+              ) : (
+                <Btn variant="primary" onClick={() => { setPagoForm({ monto: "" }); setError(""); setSuccess(""); setPagoModal(c); }}>
+                  <i className="ti ti-cash" /> Registrar pago
+                </Btn>
+              )}
             </Card>
           ))}
         </div>
