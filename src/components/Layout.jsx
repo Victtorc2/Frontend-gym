@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { C } from "../styles/colors";
 
 export default function Layout({ nav, views, auth, logout }) {
   const [view, setView] = useState(nav[0]?.id);
@@ -40,9 +41,11 @@ export default function Layout({ nav, views, auth, logout }) {
         }
 
         .logout-btn:hover {
-          background: #222 !important;
+          background: #FFD600 !important;
+          color: #111 !important;
+          border-color: #FFD600 !important;
           transform: translateY(-1px);
-          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          box-shadow: 0 4px 12px rgba(255,214,0,0.25);
         }
         .sidebar-toggle:hover {
           background: rgba(255,214,0,0.08) !important;
@@ -54,7 +57,7 @@ export default function Layout({ nav, views, auth, logout }) {
           transition: box-shadow 0.18s, border-color 0.18s, transform 0.12s;
         }
         .row-card:hover {
-          box-shadow: 0 6px 18px rgba(0,0,0,0.07);
+          box-shadow: 0 6px 20px rgba(255,214,0,0.15);
           border-color: #FFD600;
           transform: translateY(-1px);
         }
@@ -64,25 +67,25 @@ export default function Layout({ nav, views, auth, logout }) {
         }
         .tab-btn:hover:not(.active) {
           border-color: #FFD600 !important;
-          color: #111 !important;
+          color: #FFD600 !important;
         }
 
         * { box-sizing: border-box; }
       `}</style>
 
-      <div style={{ display: "flex", minHeight: "100vh", background: "#f0f0f0" }}>
+      <div style={{ display: "flex", minHeight: "100vh", background: C.bgTert }}>
 
-        {/* ── Sidebar (mantiene identidad oscura) ── */}
+        {/* ── Sidebar ── */}
         <aside style={{
           width: sidebarOpen ? 240 : 64,
-          background: "#0D0D0D",
+          background: "#0a0a0a",
           display: "flex",
           flexDirection: "column",
           transition: "width 0.22s cubic-bezier(0.4,0,0.2,1)",
           flexShrink: 0,
           position: "relative",
           zIndex: 10,
-          boxShadow: "2px 0 20px rgba(0,0,0,0.12)",
+          borderRight: "1px solid #1f1f1f",
         }}>
 
           {/* Logo */}
@@ -208,17 +211,17 @@ export default function Layout({ nav, views, auth, logout }) {
         {/* ── Main (fondo blanco) ── */}
         <main style={{ flex: 1, overflow: "auto", display: "flex", flexDirection: "column" }}>
 
-          {/* Header blanco */}
+          {/* Header */}
           <header style={{
-            background: "#ffffff",
-            borderBottom: "1px solid #e8e8e8",
+            background: C.bg,
+            borderBottom: `1px solid ${C.border}`,
             padding: "0 1.5rem",
             height: 62,
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
             flexShrink: 0,
-            boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+            boxShadow: "0 1px 4px rgba(0,0,0,0.3)",
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               <div style={{
@@ -231,7 +234,7 @@ export default function Layout({ nav, views, auth, logout }) {
                 fontFamily: "'Barlow Condensed', sans-serif",
                 fontWeight: 800,
                 fontSize: 22,
-                color: "#111111",
+                color: C.text,
                 letterSpacing: "0.05em",
               }}>
                 {currentLabel?.toUpperCase()}
@@ -242,9 +245,9 @@ export default function Layout({ nav, views, auth, logout }) {
               <div style={{
                 display: "flex", alignItems: "center", gap: 8,
                 padding: "6px 14px",
-                background: "#f5f5f5",
+                background: C.bgSec,
                 borderRadius: 10,
-                border: "1px solid #e8e8e8",
+                border: `1px solid ${C.border}`,
               }}>
                 <div style={{
                   width: 28, height: 28,
@@ -258,7 +261,7 @@ export default function Layout({ nav, views, auth, logout }) {
                   fontSize: 13,
                   fontWeight: 600,
                   fontFamily: "'Barlow', sans-serif",
-                  color: "#111",
+                  color: C.text,
                 }}>{auth.nombre || "Usuario"}</span>
               </div>
               <button
@@ -266,9 +269,9 @@ export default function Layout({ nav, views, auth, logout }) {
                 onClick={logout}
                 style={{
                   padding: "8px 16px",
-                  background: "#111111",
-                  color: "#fff",
-                  border: "none",
+                  background: "transparent",
+                  color: "#FFD600",
+                  border: "1px solid #FFD600",
                   borderRadius: 10,
                   cursor: "pointer",
                   fontSize: 13,
@@ -287,7 +290,7 @@ export default function Layout({ nav, views, auth, logout }) {
           </header>
 
           {/* Content */}
-          <div style={{ padding: "1.75rem", flex: 1, background: "#f0f0f0" }}>
+          <div style={{ padding: "1.75rem", flex: 1, background: C.bgTert }}>
             {views[view]}
           </div>
         </main>

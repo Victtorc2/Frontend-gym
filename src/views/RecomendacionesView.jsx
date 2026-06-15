@@ -58,6 +58,9 @@ export default function RecomendacionesView() {
   useEffect(() => { loadStats(); }, [loadStats]);
   useEffect(() => { loadSchedule(dia); }, [dia, loadSchedule]);
 
+  const hcBaja = heatColor("BAJA");
+  const hcAlta = heatColor("ALTA");
+
   const generar = async () => {
     setGenerating(true); setGenMessage(""); setGenError("");
     try {
@@ -144,8 +147,8 @@ export default function RecomendacionesView() {
         <div>
           <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginBottom: 12 }}>
             {schedule.horario_recomendado && (
-              <Card style={{ flex: 1, minWidth: 220, borderLeft: "4px solid #4caf50", background: "#e8f5e9" }}>
-                <div style={statLabel}><i className="ti ti-thumb-up" style={{ marginRight: 6, color: "#2e7d32" }} />Horario recomendado</div>
+              <Card style={{ flex: 1, minWidth: 220, borderLeft: `4px solid ${hcBaja.border}`, background: hcBaja.bg }}>
+                <div style={statLabel}><i className="ti ti-thumb-up" style={{ marginRight: 6, color: hcBaja.text }} />Horario recomendado</div>
                 <div style={{ fontSize: 18, fontWeight: 700, marginTop: 6, fontFamily: "'Barlow Condensed', sans-serif" }}>
                   {hora(schedule.horario_recomendado.hora_inicio)} - {hora(schedule.horario_recomendado.hora_fin)}
                 </div>
@@ -155,8 +158,8 @@ export default function RecomendacionesView() {
               </Card>
             )}
             {schedule.horario_pico && (
-              <Card style={{ flex: 1, minWidth: 220, borderLeft: "4px solid #e53935", background: "#ffebee" }}>
-                <div style={statLabel}><i className="ti ti-alert-triangle" style={{ marginRight: 6, color: "#c62828" }} />Hora pico (evitar)</div>
+              <Card style={{ flex: 1, minWidth: 220, borderLeft: `4px solid ${hcAlta.border}`, background: hcAlta.bg }}>
+                <div style={statLabel}><i className="ti ti-alert-triangle" style={{ marginRight: 6, color: hcAlta.text }} />Hora pico (evitar)</div>
                 <div style={{ fontSize: 18, fontWeight: 700, marginTop: 6, fontFamily: "'Barlow Condensed', sans-serif" }}>
                   {hora(schedule.horario_pico.hora_inicio)} - {hora(schedule.horario_pico.hora_fin)}
                 </div>

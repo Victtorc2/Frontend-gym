@@ -22,6 +22,7 @@ export const Badge = ({ children, type = "info" }) => {
       fontFamily: "'Barlow Condensed', sans-serif",
       letterSpacing: "0.04em",
       textTransform: "uppercase",
+      border: type === "info" ? "none" : "1px solid rgba(255,255,255,0.08)",
     }}>
       {children}
     </span>
@@ -41,6 +42,7 @@ export const Card = ({ children, style, className }) => (
     border: `1px solid ${C.border}`,
     borderRadius: 12,
     padding: "1.25rem",
+    boxShadow: "0 2px 10px rgba(0,0,0,0.35)",
     ...style,
   }}>
     {children}
@@ -100,7 +102,7 @@ export const PageHeader = ({ icon, title, subtitle, actions }) => (
           fontSize: 28,
           fontFamily: "'Barlow Condensed', sans-serif",
           fontWeight: 800,
-          color: C.black,
+          color: C.text,
           letterSpacing: "0.02em",
           textTransform: "uppercase",
           lineHeight: 1.15,
@@ -195,7 +197,7 @@ export const FilterSelect = ({ children, style, ...props }) => (
       padding: "8px 12px",
       borderRadius: 8,
       border: `1.5px solid ${C.borderSec}`,
-      background: C.bg,
+      background: C.bgSec,
       color: C.text,
       fontSize: 13,
       fontWeight: 500,
@@ -219,7 +221,7 @@ export const FilterInput = ({ style, ...props }) => (
       padding: "8px 12px",
       borderRadius: 8,
       border: `1.5px solid ${C.borderSec}`,
-      background: C.bg,
+      background: C.bgSec,
       color: C.text,
       fontSize: 13,
       outline: "none",
@@ -234,9 +236,9 @@ export const FilterInput = ({ style, ...props }) => (
 // ─── Btn ──────────────────────────────────────────────────────────────────────
 export const Btn = ({ children, onClick, type = "button", variant = "default", loading, disabled, style, className }) => {
   const styles = {
-    default: { background: C.bg, color: C.text, border: `1px solid ${C.borderSec}` },
+    default: { background: C.bgSec, color: C.text, border: `1px solid ${C.borderSec}` },
     primary: { background: "#FFD600", color: "#111", border: "none", fontWeight: 700 },
-    danger:  { background: C.danger, color: C.dangerText, border: "none" },
+    danger:  { background: "#f87171", color: "#1a1a1a", border: "none", fontWeight: 700 },
   };
   return (
     <button
@@ -286,7 +288,7 @@ export const Input = ({ label, id, error, ...props }) => (
         padding: "9px 12px",
         borderRadius: 8,
         border: `1.5px solid ${error ? "var(--color-border-danger)" : C.borderSec}`,
-        background: C.bg,
+        background: C.bgSec,
         color: C.text,
         fontSize: 14,
         outline: "none",
@@ -321,7 +323,7 @@ export const Select = ({ label, id, children, ...props }) => (
         padding: "9px 12px",
         borderRadius: 8,
         border: `1.5px solid ${C.borderSec}`,
-        background: C.bg,
+        background: C.bgSec,
         color: C.text,
         fontSize: 14,
       }}
@@ -335,8 +337,8 @@ export const Select = ({ label, id, children, ...props }) => (
 // ─── Alert ────────────────────────────────────────────────────────────────────
 export const Alert = ({ type = "danger", children }) => {
   const [bg, color, border] = type === "success"
-    ? [C.success, C.successText, "#a5d6a7"]
-    : [C.danger, C.dangerText, "#ef9a9a"];
+    ? [C.success, C.successText, "rgba(74, 222, 128, 0.35)"]
+    : [C.danger, C.dangerText, "rgba(248, 113, 113, 0.35)"];
   return (
     <div style={{
       background: bg,
@@ -371,14 +373,14 @@ export const EmptyState = ({ icon, text }) => (
   <div style={{ textAlign: "center", padding: "3rem 1rem", color: C.textSec }}>
     <div style={{
       width: 56, height: 56,
-      background: "#FFF9C4",
+      background: "rgba(255, 214, 0, 0.12)",
       borderRadius: 12,
       display: "inline-flex",
       alignItems: "center",
       justifyContent: "center",
       marginBottom: 12,
     }}>
-      <i className={`ti ti-${icon}`} style={{ fontSize: 28, color: "#F5C800" }} />
+      <i className={`ti ti-${icon}`} style={{ fontSize: 28, color: "#FFD600" }} />
     </div>
     <p style={{ margin: 0, fontSize: 14 }}>{text}</p>
   </div>
@@ -388,7 +390,7 @@ export const EmptyState = ({ icon, text }) => (
 export const Modal = ({ title, onClose, children, width = 500 }) => (
   <div style={{
     position: "fixed", inset: 0,
-    background: "rgba(0,0,0,0.3)",
+    background: "rgba(0,0,0,0.6)",
     backdropFilter: "blur(2px)",
     display: "flex", alignItems: "center", justifyContent: "center",
     zIndex: 1000, padding: "1rem",
@@ -397,7 +399,7 @@ export const Modal = ({ title, onClose, children, width = 500 }) => (
       background: C.bg,
       borderRadius: 16,
       border: `1px solid ${C.border}`,
-      boxShadow: "0 20px 60px rgba(0,0,0,0.15)",
+      boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
       width: "100%", maxWidth: width,
       maxHeight: "90vh", overflow: "auto",
     }}>

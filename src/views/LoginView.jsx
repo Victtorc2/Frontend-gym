@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { C } from "../styles/colors";
 import api from "../services/api";
 
 export default function LoginView({ onLogin }) {
@@ -23,7 +24,7 @@ export default function LoginView({ onLogin }) {
   };
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", background: "#f0f0f0" }}>
+    <div style={{ minHeight: "100vh", display: "flex", background: C.bgTert }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600;700&display=swap');
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -110,14 +111,14 @@ export default function LoginView({ onLogin }) {
         </div>
       </div>
 
-      {/* ── Panel derecho blanco ── */}
+      {/* ── Panel derecho oscuro ── */}
       <div style={{
         flex: 1,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         padding: "2rem",
-        background: "#ffffff",
+        background: C.bg,
       }}>
         <div style={{ width: "100%", maxWidth: 390 }}>
 
@@ -134,19 +135,19 @@ export default function LoginView({ onLogin }) {
             <span style={{
               fontFamily: "'Barlow Condensed', sans-serif",
               fontWeight: 800, fontSize: 18,
-              color: "#111", letterSpacing: "0.08em",
+              color: C.text, letterSpacing: "0.08em",
             }}>
-              GYM<span style={{ color: "#E6AC00" }}>WARRIOR</span>
+              GYM<span style={{ color: "#FFD600" }}>WARRIOR</span>
             </span>
           </div>
 
           <h2 style={{
             fontFamily: "'Barlow Condensed', sans-serif",
             fontWeight: 800, fontSize: 32,
-            color: "#111", marginBottom: 6, letterSpacing: "0.03em",
+            color: C.text, marginBottom: 6, letterSpacing: "0.03em",
           }}>INICIAR SESIÓN</h2>
           <p style={{
-            color: "#888", fontSize: 14,
+            color: C.textSec, fontSize: 14,
             marginBottom: "2.25rem",
             fontFamily: "'Barlow', sans-serif",
           }}>
@@ -156,7 +157,7 @@ export default function LoginView({ onLogin }) {
           <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               <label style={{
-                fontSize: 11, color: "#888", fontWeight: 700,
+                fontSize: 11, color: C.textSec, fontWeight: 700,
                 textTransform: "uppercase", letterSpacing: "0.1em",
                 fontFamily: "'Barlow Condensed', sans-serif",
               }}>Correo electrónico</label>
@@ -169,9 +170,9 @@ export default function LoginView({ onLogin }) {
                 style={{
                   padding: "12px 14px",
                   borderRadius: 10,
-                  border: "1.5px solid #e0e0e0",
-                  background: "#fafafa",
-                  color: "#111",
+                  border: `1.5px solid ${C.borderSec}`,
+                  background: C.bgSec,
+                  color: C.text,
                   fontSize: 14,
                   fontFamily: "'Barlow', sans-serif",
                 }}
@@ -180,7 +181,7 @@ export default function LoginView({ onLogin }) {
 
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               <label style={{
-                fontSize: 11, color: "#888", fontWeight: 700,
+                fontSize: 11, color: C.textSec, fontWeight: 700,
                 textTransform: "uppercase", letterSpacing: "0.1em",
                 fontFamily: "'Barlow Condensed', sans-serif",
               }}>Contraseña</label>
@@ -193,9 +194,9 @@ export default function LoginView({ onLogin }) {
                 style={{
                   padding: "12px 14px",
                   borderRadius: 10,
-                  border: "1.5px solid #e0e0e0",
-                  background: "#fafafa",
-                  color: "#111",
+                  border: `1.5px solid ${C.borderSec}`,
+                  background: C.bgSec,
+                  color: C.text,
                   fontSize: 14,
                   fontFamily: "'Barlow', sans-serif",
                 }}
@@ -204,9 +205,9 @@ export default function LoginView({ onLogin }) {
 
             {error && (
               <div style={{
-                background: "#fee2e2",
-                color: "#991b1b",
-                border: "1px solid #fca5a5",
+                background: "rgba(248,113,113,0.14)",
+                color: "#f87171",
+                border: "1px solid rgba(248,113,113,0.35)",
                 padding: "11px 14px",
                 borderRadius: 10,
                 fontSize: 13,

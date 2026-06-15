@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { C } from "../../styles/colors";
+import { C, heatColor } from "../../styles/colors";
 import { Row, Badge, Spinner, EmptyState, PageHeader, StatCard, Avatar } from "../../components";
 import api from "../../services/api";
 
@@ -54,7 +54,7 @@ export default function MiAsistenciaView() {
             return (
               <Row key={h.id}>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <Avatar color={aprobado ? "#dcfce7" : "#fee2e2"}>
+                  <Avatar color={aprobado ? heatColor("BAJA").bg : heatColor("ALTA").bg}>
                     <i className={`ti ti-${aprobado ? "circle-check" : "circle-x"}`} style={{ fontSize: 18, color: aprobado ? "var(--color-text-success)" : "var(--color-text-danger)" }} />
                   </Avatar>
                   <div>

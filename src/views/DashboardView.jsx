@@ -7,14 +7,21 @@ import { C } from "../styles/colors";
 import { Card, Spinner, EmptyState, PageHeader, StatCard } from "../components";
 import api from "../services/api";
 
-const AXIS_COLOR = "#666666";
-const GRID_COLOR = "#e0e0e0";
+const AXIS_COLOR = "#9a9a9a";
+const GRID_COLOR = "#2c2c2c";
+
+const TOOLTIP_STYLE = {
+  contentStyle: { background: "#232323", border: "1px solid #3a3a3a", borderRadius: 8 },
+  labelStyle: { color: "#f5f5f5" },
+  itemStyle: { color: "#f5f5f5" },
+};
+const LEGEND_STYLE = { color: "#9a9a9a" };
 
 const DIA_ORDER = ["lunes", "martes", "miercoles", "jueves", "viernes", "sabado"];
 const DIA_LABELS = { lunes: "Lun", martes: "Mar", miercoles: "Mié", jueves: "Jue", viernes: "Vie", sabado: "Sáb" };
 
 const TIPO_LABELS = { mensual: "Mensual", anual: "Anual", diario: "Diario" };
-const TIPO_COLORS = { mensual: "#FFD600", anual: "#111111", diario: "#42a5f5" };
+const TIPO_COLORS = { mensual: "#FFD600", anual: "#BDBDBD", diario: "#42a5f5" };
 
 const ACTIVIDAD_LABELS = { activo: "Activo", poco_activo: "Poco activo", inactivo: "Inactivo" };
 const ACTIVIDAD_COLORS = { activo: "#4caf50", poco_activo: "#FFD600", inactivo: "#9e9e9e" };
@@ -133,7 +140,7 @@ export default function DashboardView() {
                     <CartesianGrid strokeDasharray="3 3" stroke={GRID_COLOR} />
                     <XAxis dataKey="dia" tick={{ fill: AXIS_COLOR, fontSize: 12 }} />
                     <YAxis allowDecimals={false} tick={{ fill: AXIS_COLOR, fontSize: 12 }} />
-                    <Tooltip />
+                    <Tooltip {...TOOLTIP_STYLE} />
                     <Bar dataKey="total" name="Asistencias" fill="#FFD600" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
@@ -152,8 +159,8 @@ export default function DashboardView() {
                         <Cell key={d.key} fill={ACTIVIDAD_COLORS[d.key]} />
                       ))}
                     </Pie>
-                    <Tooltip />
-                    <Legend />
+                    <Tooltip {...TOOLTIP_STYLE} />
+                    <Legend wrapperStyle={LEGEND_STYLE} />
                   </PieChart>
                 </ResponsiveContainer>
               )}
@@ -171,8 +178,8 @@ export default function DashboardView() {
                         <Cell key={d.key} fill={TIPO_COLORS[d.key] || "#9e9e9e"} />
                       ))}
                     </Pie>
-                    <Tooltip />
-                    <Legend />
+                    <Tooltip {...TOOLTIP_STYLE} />
+                    <Legend wrapperStyle={LEGEND_STYLE} />
                   </PieChart>
                 </ResponsiveContainer>
               )}
@@ -188,8 +195,8 @@ export default function DashboardView() {
                     <CartesianGrid strokeDasharray="3 3" stroke={GRID_COLOR} />
                     <XAxis dataKey="metodo" tick={{ fill: AXIS_COLOR, fontSize: 12 }} />
                     <YAxis tick={{ fill: AXIS_COLOR, fontSize: 12 }} tickFormatter={(v) => `S/.${v}`} />
-                    <Tooltip formatter={(value) => formatSoles(value)} />
-                    <Bar dataKey="monto" name="Ingresos" fill="#111111" radius={[4, 4, 0, 0]} />
+                    <Tooltip {...TOOLTIP_STYLE} formatter={(value) => formatSoles(value)} />
+                    <Bar dataKey="monto" name="Ingresos" fill="#42a5f5" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               )}

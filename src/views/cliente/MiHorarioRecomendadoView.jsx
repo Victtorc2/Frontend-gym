@@ -36,13 +36,17 @@ export default function MiHorarioRecomendadoView() {
 
   const diaActual = data.dia_actual ? data.dia_actual.charAt(0).toUpperCase() + data.dia_actual.slice(1) : "";
 
+  const hcBaja = heatColor("BAJA");
+  const hcMedia = heatColor("MEDIA");
+  const hcAlta = heatColor("ALTA");
+
   return (
     <div>
       <PageHeader icon="clock" title="Horario recomendado" subtitle={`Hoy es ${diaActual}`} />
 
       <div style={{
-        padding: "1.25rem", background: "#FFF8E1", borderRadius: 12,
-        border: `1px solid ${C.border}`, borderLeft: "4px solid #FFD600", marginBottom: 20,
+        padding: "1.25rem", background: hcMedia.bg, borderRadius: 12,
+        border: `1px solid ${C.border}`, borderLeft: `4px solid ${hcMedia.border}`, marginBottom: 20,
         display: "flex", alignItems: "center", gap: 14,
       }}>
         <div style={{
@@ -56,20 +60,20 @@ export default function MiHorarioRecomendadoView() {
 
       <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginBottom: 24 }}>
         {data.horario_recomendado && (
-          <Card style={{ flex: 1, minWidth: 220, borderLeft: "4px solid #4caf50", background: "#e8f5e9" }}>
-            <div style={statLabel}><i className="ti ti-thumb-up" style={{ marginRight: 6, color: "#2e7d32" }} />Mejor horario para ir</div>
+          <Card style={{ flex: 1, minWidth: 220, borderLeft: `4px solid ${hcBaja.border}`, background: hcBaja.bg }}>
+            <div style={statLabel}><i className="ti ti-thumb-up" style={{ marginRight: 6, color: hcBaja.text }} />Mejor horario para ir</div>
             <div style={{ fontSize: 20, fontWeight: 800, marginTop: 6, fontFamily: "'Barlow Condensed', sans-serif" }}>{data.horario_recomendado.horario}</div>
-            <div style={{ fontSize: 12, color: "#2e7d32", marginTop: 6, display: "flex", alignItems: "center", gap: 6 }}>
+            <div style={{ fontSize: 12, color: hcBaja.text, marginTop: 6, display: "flex", alignItems: "center", gap: 6 }}>
               ~{data.horario_recomendado.promedio_personas} personas
               <Badge type={afluenciaBadge[data.horario_recomendado.nivel_afluencia] || "neutral"}>{data.horario_recomendado.nivel_afluencia}</Badge>
             </div>
           </Card>
         )}
         {data.horario_a_evitar && (
-          <Card style={{ flex: 1, minWidth: 220, borderLeft: "4px solid #e53935", background: "#ffebee" }}>
-            <div style={statLabel}><i className="ti ti-alert-triangle" style={{ marginRight: 6, color: "#c62828" }} />Horario a evitar</div>
+          <Card style={{ flex: 1, minWidth: 220, borderLeft: `4px solid ${hcAlta.border}`, background: hcAlta.bg }}>
+            <div style={statLabel}><i className="ti ti-alert-triangle" style={{ marginRight: 6, color: hcAlta.text }} />Horario a evitar</div>
             <div style={{ fontSize: 20, fontWeight: 800, marginTop: 6, fontFamily: "'Barlow Condensed', sans-serif" }}>{data.horario_a_evitar.horario}</div>
-            <div style={{ fontSize: 12, color: "#c62828", marginTop: 6, display: "flex", alignItems: "center", gap: 6 }}>
+            <div style={{ fontSize: 12, color: hcAlta.text, marginTop: 6, display: "flex", alignItems: "center", gap: 6 }}>
               ~{data.horario_a_evitar.promedio_personas} personas
               <Badge type={afluenciaBadge[data.horario_a_evitar.nivel_afluencia] || "neutral"}>{data.horario_a_evitar.nivel_afluencia}</Badge>
             </div>

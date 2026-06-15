@@ -14,8 +14,6 @@ export const C = {
   dangerText: "var(--color-text-danger)",
   warning: "var(--color-background-warning)",
   warningText: "var(--color-text-warning)",
-  yellow: "#FFD600",
-  black: "#111111",
 };
 
 export const statusBadgeType = {
@@ -30,8 +28,8 @@ export const statusBadgeType = {
 };
 
 const heatColors = {
-  BAJA:  { bg: "#e8f5e9", border: "#4caf50", text: "#2e7d32" },
-  MEDIA: { bg: "#fff8e1", border: "#FFD600", text: "#8a6d00" },
-  ALTA:  { bg: "#ffebee", border: "#e53935", text: "#c62828" },
+  BAJA:  { bg: "rgba(74, 222, 128, 0.12)", border: "#4ade80", text: "#86efac" },
+  MEDIA: { bg: "rgba(255, 214, 0, 0.10)",  border: "#FFD600", text: "#FFD600" },
+  ALTA:  { bg: "rgba(248, 113, 113, 0.14)", border: "#f87171", text: "#fca5a5" },
 };
 export const heatColor = (nivel) => heatColors[nivel] || { bg: C.bgSec, border: C.border, text: C.textSec };
