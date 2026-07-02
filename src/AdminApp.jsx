@@ -7,6 +7,11 @@ import ClientesDiariosView from "./views/ClientesDiariosView";
 import PagosView from "./views/PagosView";
 import SegmentacionView from "./views/SegmentacionView";
 import RecomendacionesView from "./views/RecomendacionesView";
+import RecomendarClienteView from "./views/RecomendarClienteView";
+import MaquinasView from "./views/MaquinasView";
+import RutinasView from "./views/RutinasView";
+import DemandaView from "./views/DemandaView";
+import ComentariosView from "./views/ComentariosView";
 import ReportesView from "./views/ReportesView";
 
 const NAV = [
@@ -18,6 +23,11 @@ const NAV = [
   { id: "pagos",           icon: "cash",              label: "Pagos" },
   { id: "segmentacion",    icon: "chart-pie",         label: "Segmentación" },
   { id: "recomendaciones", icon: "clock-bolt",        label: "Horarios Recomendados" },
+  { id: "recomendar",      icon: "user-star",         label: "Recomendar a Cliente" },
+  { id: "maquinas",        icon: "barbell",           label: "Máquinas" },
+  { id: "rutinas",         icon: "clipboard-list",    label: "Rutinas" },
+  { id: "demanda",         icon: "chart-histogram",   label: "Demanda" },
+  { id: "comentarios",     icon: "message-2",         label: "Comentarios" },
   { id: "reportes",        icon: "chart-bar",         label: "Reportes" },
 ];
 
@@ -30,6 +40,11 @@ const VIEWS = {
   pagos:           <PagosView />,
   segmentacion:    <SegmentacionView />,
   recomendaciones: <RecomendacionesView />,
+  recomendar:      <RecomendarClienteView />,
+  maquinas:        <MaquinasView />,
+  rutinas:         <RutinasView />,
+  demanda:         <DemandaView />,
+  comentarios:     <ComentariosView />,
   reportes:        <ReportesView />,
 };
 

@@ -44,6 +44,29 @@ export default function MiHorarioRecomendadoView() {
     <div>
       <PageHeader icon="clock" title="Horario recomendado" subtitle={`Hoy es ${diaActual}`} />
 
+      {data.recomendacion_personal && (
+        <div style={{
+          padding: "1.25rem", background: "rgba(255,214,0,0.16)", borderRadius: 12,
+          border: `1px solid ${C.border}`, borderLeft: "4px solid #FFD600", marginBottom: 20,
+          display: "flex", alignItems: "center", gap: 14,
+        }}>
+          <div style={{ width: 40, height: 40, borderRadius: 10, background: "#FFD600", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <i className="ti ti-star-filled" style={{ fontSize: 20, color: "#111" }} />
+          </div>
+          <div>
+            <div style={{ fontSize: 12, color: C.textSec, textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 700, fontFamily: "'Barlow Condensed', sans-serif" }}>
+              Recomendación de tu entrenador
+            </div>
+            <div style={{ fontSize: 18, fontWeight: 800, marginTop: 2, textTransform: "capitalize", fontFamily: "'Barlow Condensed', sans-serif" }}>
+              {data.recomendacion_personal.dia_semana} · {data.recomendacion_personal.horario}
+            </div>
+            {data.recomendacion_personal.mensaje && (
+              <div style={{ fontSize: 13, color: C.text, marginTop: 4 }}>"{data.recomendacion_personal.mensaje}"</div>
+            )}
+          </div>
+        </div>
+      )}
+
       <div style={{
         padding: "1.25rem", background: hcMedia.bg, borderRadius: 12,
         border: `1px solid ${C.border}`, borderLeft: `4px solid ${hcMedia.border}`, marginBottom: 20,

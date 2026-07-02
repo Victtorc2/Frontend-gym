@@ -31,6 +31,7 @@ const api = {
   post: (path, body) => api.request("POST", path, body),
   put: (path, body) => api.request("PUT", path, body),
   patch: (path, body) => api.request("PATCH", path, body),
+  del: (path) => api.request("DELETE", path),
 };
 
 export default api;
