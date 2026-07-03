@@ -7,8 +7,11 @@ const NIVEL_BADGE = { bajo: "success", medio: "warning", alto: "warning", muy_al
 const today = () => new Date().toISOString().slice(0, 10);
 const daysAgo = (n) => new Date(Date.now() - n * 864e5).toISOString().slice(0, 10);
 
+const AFLU_BADGE = { BAJA: "success", MEDIA: "warning", ALTA: "danger" };
+
 const TABS = [
   { id: "hoy", label: "Demanda de hoy", icon: "chart-histogram" },
+  { id: "afluencia", label: "Afluencia prevista", icon: "users-group" },
   { id: "entrenador", label: "Vista entrenador", icon: "clipboard-check" },
   { id: "indice", label: "Índice de demanda", icon: "trending-up" },
   { id: "precision", label: "Precisión", icon: "target-arrow" },
@@ -27,6 +30,7 @@ export default function DemandaView() {
         ))}
       </div>
       {tab === "hoy" && <TabHoy />}
+      {tab === "afluencia" && <TabAfluencia />}
       {tab === "entrenador" && <TabEntrenador />}
       {tab === "indice" && <TabIndice />}
       {tab === "precision" && <TabPrecision />}
@@ -110,6 +114,55 @@ function TabHoy() {
                   <span style={{ fontSize: 13, fontWeight: 600, width: 96, textAlign: "right" }}>{z.porcentaje}% ({z.clientes})</span>
                 </div>
               ))}
+          </Card>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function TabAfluencia() {
+  const [fecha, setFecha] = useState(today());
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const load = useCallback(async () => {
+    setLoading(true);
+    try { setData((await api.get(`/api/demanda/afluencia-prevista?fecha=${fecha}`)).data); } catch { setData(null); }
+    setLoading(false);
+  }, [fecha]);
+  useEffect(() => { load(); }, [load]);
+
+  const maxTotal = data ? Math.max(1, ...data.por_hora.map(h => h.total_estimado)) : 1;
+
+  return (
+    <div>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+        <span style={{ fontSize: 13, color: C.textSec }}>Fecha:</span>
+        <input type="date" value={fecha} onChange={e => setFecha(e.target.value)} style={dateInput} />
+      </div>
+      {loading ? <Spinner /> : !data ? <EmptyState icon="users-group" text="Sin datos" /> : (
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <Card style={{ borderLeft: "4px solid #FFD600" }}>
+            <p style={{ margin: 0, fontWeight: 700 }}><i className="ti ti-users-group" /> {data.mensaje}</p>
+            <p style={{ margin: "6px 0 0", fontSize: 13, color: C.textSec }}>
+              Combina las horas que los clientes declararon con el promedio histórico de asistencia.
+            </p>
+          </Card>
+          <Card>
+            <h3 style={{ margin: "0 0 12px", fontSize: 14, textTransform: "uppercase", letterSpacing: "0.04em", fontFamily: "'Barlow Condensed', sans-serif" }}>Afluencia estimada por hora</h3>
+            {data.por_hora.map(h => (
+              <div key={h.hora} style={{ display: "flex", alignItems: "center", gap: 10, padding: "5px 0" }}>
+                <span style={{ width: 96, fontSize: 12, color: C.textSec }}>{h.horario}</span>
+                <div style={{ flex: 1, height: 16, background: C.bgSec, borderRadius: 5, overflow: "hidden", position: "relative" }}>
+                  <div style={{ width: `${(h.total_estimado / maxTotal) * 100}%`, height: "100%", background: h.horario === data.hora_pico_prevista ? "linear-gradient(90deg,#ef4444,#b91c1c)" : "linear-gradient(90deg,#FFD600,#FF9900)" }} />
+                </div>
+                <span style={{ fontSize: 12, color: C.textSec, width: 120 }}>
+                  {h.declarados} decl. + {h.historico} hist.
+                </span>
+                <span style={{ fontSize: 13, fontWeight: 700, width: 24, textAlign: "right" }}>{h.total_estimado}</span>
+                <Badge type={AFLU_BADGE[h.nivel]}>{h.nivel}</Badge>
+              </div>
+            ))}
           </Card>
         </div>
       )}

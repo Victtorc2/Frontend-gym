@@ -1,4 +1,7 @@
-const API_BASE = "http://localhost:8000";
+export const API_BASE = "http://localhost:8000";
+
+// Construye la URL absoluta de un recurso servido por el backend (ej. foto de máquina).
+export const mediaUrl = (path) => (path ? `${API_BASE}${path}` : null);
 
 const api = {
   // El token se inicializa desde localStorage para mantener la sesión tras un refresh.
@@ -32,6 +35,19 @@ const api = {
   put: (path, body) => api.request("PUT", path, body),
   patch: (path, body) => api.request("PATCH", path, body),
   del: (path) => api.request("DELETE", path),
+
+  // Subida de archivos (multipart). No fija Content-Type: el navegador pone el boundary.
+  async upload(path, file, field = "file") {
+    const form = new FormData();
+    form.append(field, file);
+    const headers = {};
+    if (this.token) headers["Authorization"] = `Bearer ${this.token}`;
+    const res = await fetch(`${API_BASE}${path}`, { method: "POST", headers, body: form });
+    if (res.status === 401) { api.setToken(null); localStorage.removeItem("gym_user"); }
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Error al subir el archivo");
+    return data;
+  },
 };
 
 export default api;

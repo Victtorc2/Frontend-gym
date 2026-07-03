@@ -78,7 +78,14 @@ export default function MiHorarioRecomendadoView() {
         }}>
           <i className="ti ti-bulb" style={{ fontSize: 20, color: "#111" }} />
         </div>
-        <p style={{ margin: 0, color: C.text, fontSize: 14, lineHeight: 1.6 }}>{data.mensaje}</p>
+        <div>
+          <p style={{ margin: 0, color: C.text, fontSize: 14, lineHeight: 1.6 }}>{data.mensaje}</p>
+          {data.confirmados_hoy > 0 && (
+            <p style={{ margin: "6px 0 0", fontSize: 13, color: C.textSec }}>
+              <i className="ti ti-users" /> {data.confirmados_hoy} persona(s) ya confirmaron que vienen hoy.
+            </p>
+          )}
+        </div>
       </div>
 
       <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginBottom: 24 }}>

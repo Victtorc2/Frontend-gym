@@ -16,6 +16,8 @@ export default function MiPlanView() {
   const [form, setForm] = useState({ fecha: today(), hora_inicio: "18:00", zonas: [], rutina_id: "" });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [checkinHora, setCheckinHora] = useState("18:00");
+  const [checkinLoading, setCheckinLoading] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -44,6 +46,13 @@ export default function MiPlanView() {
     setSaving(false);
   };
 
+  const doCheckin = async () => {
+    setCheckinLoading(true);
+    try { await api.post("/api/mi-plan/checkin", { hora_inicio: checkinHora }); load(); }
+    catch (err) { alert(err.message); }
+    setCheckinLoading(false);
+  };
+
   const cambiarEstado = async (estado) => { try { await api.patch("/api/mi-plan/estado", { estado }); load(); } catch (err) { alert(err.message); } };
   const eliminar = async () => { if (!confirm("¿Eliminar tu plan de hoy?")) return; try { await api.del("/api/mi-plan/hoy"); setPlan(null); load(); } catch (err) { alert(err.message); } };
 
@@ -53,6 +62,18 @@ export default function MiPlanView() {
   return (
     <div>
       <PageHeader icon="clipboard-check" title="Mi plan" subtitle="Planifica tu entrenamiento y evita las horas llenas" />
+
+      {/* Check-in rápido: solo la hora */}
+      {!hoy && (
+        <Card style={{ marginBottom: 16, display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap", borderLeft: "4px solid #FFD600" }}>
+          <div style={{ flex: 1, minWidth: 200 }}>
+            <p style={{ margin: 0, fontWeight: 700, fontSize: 15 }}><i className="ti ti-hand-click" /> ¿Vas a venir hoy?</p>
+            <p style={{ margin: "2px 0 0", fontSize: 13, color: C.textSec }}>Dinos a qué hora para ayudarnos a controlar la afluencia.</p>
+          </div>
+          <input type="time" value={checkinHora} onChange={e => setCheckinHora(e.target.value)} style={fieldInput} />
+          <Btn variant="primary" loading={checkinLoading} onClick={doCheckin}><i className="ti ti-check" /> Confirmar asistencia de hoy</Btn>
+        </Card>
+      )}
 
       {hoy && (
         <Card style={{ borderLeft: "4px solid #FFD600", marginBottom: 16 }}>
