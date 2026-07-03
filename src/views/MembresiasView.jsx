@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { C } from "../styles/colors";
-import { Row, Badge, Btn, Input, Select, FilterSelect, Alert, Spinner, EmptyState, Modal, StatusBadge, PageHeader, Avatar } from "../components";
+import { Row, Card, Badge, Btn, Input, Select, FilterSelect, Alert, Spinner, EmptyState, Modal, StatusBadge, PageHeader, Avatar } from "../components";
 import api from "../services/api";
 
 const tipoColor = { mensual: "info", anual: "success", diario: "warning" };
@@ -16,6 +16,9 @@ export default function MembresiasView() {
   const [success, setSuccess] = useState("");
   const [filterTipo, setFilterTipo] = useState("");
   const [filterEstado, setFilterEstado] = useState("activa");
+  const [tarjetasModal, setTarjetasModal] = useState(null); // { nombre } | null
+  const [tarjetas, setTarjetas] = useState([]);
+  const [tarjetasLoading, setTarjetasLoading] = useState(false);
 
   // Cargar lista de clientes para mostrar nombres
   useEffect(() => {
@@ -65,6 +68,17 @@ export default function MembresiasView() {
     setSaving(false);
   };
 
+  const verTarjetas = async (m) => {
+    setTarjetasModal({ nombre: getNombreCliente(m.cliente_id) });
+    setTarjetas([]); setTarjetasLoading(true);
+    try {
+      const res = await api.get(`/api/tarjetas/cliente/${m.cliente_id}`);
+      const data = res.data;
+      setTarjetas(Array.isArray(data) ? data : data ? [data] : []);
+    } catch { setTarjetas([]); }
+    setTarjetasLoading(false);
+  };
+
   return (
     <div>
       <PageHeader
@@ -112,7 +126,7 @@ export default function MembresiasView() {
                   </div>
                 </div>
                 <div style={{ display: "flex", gap: 8 }}>
-                  <Btn onClick={() => api.get(`/api/tarjetas/cliente/${m.cliente_id}`).then(r => alert(JSON.stringify(r.data, null, 2))).catch(err => alert(err.message))}>
+                  <Btn onClick={() => verTarjetas(m)}>
                     <i className="ti ti-credit-card" /> Tarjetas
                   </Btn>
                 </div>
@@ -154,6 +168,29 @@ export default function MembresiasView() {
               <Btn type="submit" variant="primary" loading={saving}>Registrar</Btn>
             </div>
           </form>
+        </Modal>
+      )}
+
+      {tarjetasModal && (
+        <Modal title={`Tarjetas de ${tarjetasModal.nombre}`} onClose={() => setTarjetasModal(null)} width={460}>
+          {tarjetasLoading ? <Spinner /> : tarjetas.length === 0 ? (
+            <EmptyState icon="credit-card-off" text="Este cliente no tiene tarjetas emitidas" />
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {tarjetas.map(t => (
+                <Card key={t.id} style={{ display: "flex", alignItems: "center", gap: 14, padding: "1rem 1.1rem", background: "linear-gradient(135deg,#111,#2a2a2a)", border: "none" }}>
+                  <div style={{ width: 44, height: 44, borderRadius: 10, background: "linear-gradient(135deg,#FFD600,#FF9900)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <i className="ti ti-credit-card" style={{ fontSize: 22, color: "#111" }} />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <p style={{ margin: 0, fontWeight: 800, fontSize: 17, color: "#fff", letterSpacing: "0.06em", fontFamily: "'Barlow Condensed', sans-serif" }}>{t.codigo}</p>
+                    <p style={{ margin: "2px 0 0", fontSize: 12, color: "rgba(255,255,255,0.6)" }}>Emitida: {t.fecha_emision}</p>
+                  </div>
+                  <StatusBadge estado={t.estado} />
+                </Card>
+              ))}
+            </div>
+          )}
         </Modal>
       )}
     </div>

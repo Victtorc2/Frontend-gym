@@ -27,6 +27,11 @@ export default function PagosView() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  const [abono, setAbono] = useState(null); // pago a completar | null
+  const [abonoForm, setAbonoForm] = useState({ monto: "", metodo_pago: "efectivo" });
+  const [abonoSaving, setAbonoSaving] = useState(false);
+  const [abonoError, setAbonoError] = useState("");
+
   useEffect(() => {
     api.get("/api/clientes?per_page=100&page=1")
       .then(res => {
@@ -103,6 +108,27 @@ export default function PagosView() {
     setSaving(false);
   };
 
+  const openAbono = (p) => {
+    setAbono(p);
+    setAbonoForm({ monto: String(p.saldo_pendiente), metodo_pago: p.metodo_pago || "efectivo" });
+    setAbonoError("");
+  };
+
+  const saveAbono = async (e) => {
+    e.preventDefault();
+    setAbonoSaving(true); setAbonoError("");
+    try {
+      await api.post(`/api/pagos/${abono.id}/abono`, {
+        monto: parseFloat(abonoForm.monto),
+        metodo_pago: abonoForm.metodo_pago,
+      });
+      setAbono(null);
+      loadPagos();
+      loadDeudas();
+    } catch (err) { setAbonoError(err.message); }
+    setAbonoSaving(false);
+  };
+
   return (
     <div>
       <PageHeader
@@ -159,6 +185,9 @@ export default function PagosView() {
                         </p>
                       </div>
                     </div>
+                    {Number(p.saldo_pendiente) > 0 && (
+                      <Btn variant="primary" onClick={() => openAbono(p)}><i className="ti ti-cash" /> Completar</Btn>
+                    )}
                   </Row>
                 );
               })}
@@ -247,6 +276,33 @@ export default function PagosView() {
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
               <Btn onClick={() => setModal(false)}>Cancelar</Btn>
               <Btn type="submit" variant="primary" loading={saving}>Registrar</Btn>
+            </div>
+          </form>
+        </Modal>
+      )}
+
+      {abono && (
+        <Modal title="Completar pago" onClose={() => setAbono(null)} width={420}>
+          <form onSubmit={saveAbono} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <Card style={{ background: C.bgSec, border: "none" }}>
+              <div style={{ fontSize: 13, color: C.textSec }}>{getNombreCliente(abono.cliente_id)}</div>
+              <div style={{ fontSize: 13, marginTop: 4 }}>Total: S/. {abono.monto_total} · Pagado: S/. {abono.monto_pagado}</div>
+              <div style={{ fontSize: 16, fontWeight: 800, color: C.dangerText, marginTop: 2, fontFamily: "'Barlow Condensed', sans-serif" }}>
+                Saldo pendiente: S/. {abono.saldo_pendiente}
+              </div>
+            </Card>
+            <Input label="Monto a abonar (S/.)" type="number" step="0.01" min="0.01" max={abono.saldo_pendiente}
+              value={abonoForm.monto} onChange={e => setAbonoForm(f => ({ ...f, monto: e.target.value }))} required />
+            <Select label="Método de pago" value={abonoForm.metodo_pago} onChange={e => setAbonoForm(f => ({ ...f, metodo_pago: e.target.value }))}>
+              <option value="efectivo">Efectivo</option>
+              <option value="transferencia">Transferencia</option>
+              <option value="yape">Yape</option>
+              <option value="plin">Plin</option>
+            </Select>
+            {abonoError && <Alert>{abonoError}</Alert>}
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
+              <Btn onClick={() => setAbono(null)}>Cancelar</Btn>
+              <Btn type="submit" variant="primary" loading={abonoSaving}>Registrar abono</Btn>
             </div>
           </form>
         </Modal>

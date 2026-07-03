@@ -74,7 +74,8 @@ export default function ClientesView() {
     } catch (err) { alert(err.message); }
   };
 
-  const ClientForm = ({ onSubmit }) => (
+  // Función de render (NO componente anidado) para no perder el foco al escribir.
+  const renderForm = (onSubmit) => (
     <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
         <Input label="Nombres" value={form.nombres || ""} onChange={e => setForm(f => ({ ...f, nombres: e.target.value }))} required />
@@ -159,12 +160,12 @@ export default function ClientesView() {
 
       {modal === "create" && (
         <Modal title="Registrar nuevo cliente" onClose={() => setModal(null)} width={520}>
-          <ClientForm onSubmit={saveCreate} />
+          {renderForm(saveCreate)}
         </Modal>
       )}
       {modal && modal !== "create" && (
         <Modal title={`Editar: ${modal.nombres} ${modal.apellidos}`} onClose={() => setModal(null)} width={520}>
-          <ClientForm onSubmit={saveEdit} />
+          {renderForm(saveEdit)}
         </Modal>
       )}
     </div>

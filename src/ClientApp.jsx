@@ -8,6 +8,7 @@ import MiHorarioRecomendadoView from "./views/cliente/MiHorarioRecomendadoView";
 import MiPlanView from "./views/cliente/MiPlanView";
 import MisComentariosView from "./views/cliente/MisComentariosView";
 import MaquinasClienteView from "./views/cliente/MaquinasClienteView";
+import ReservasView from "./views/cliente/ReservasView";
 
 const NAV = [
   { id: "perfil",     icon: "user",            label: "Mi Perfil" },
@@ -17,6 +18,7 @@ const NAV = [
   { id: "maquinas",   icon: "barbell",         label: "Máquinas" },
   { id: "horario",    icon: "clock-bolt",      label: "Horario Recomendado" },
   { id: "plan",       icon: "clipboard-check", label: "Mi Plan" },
+  { id: "reservas",   icon: "calendar-plus",   label: "Reservar Máquina" },
   { id: "comentarios", icon: "message-2",      label: "Comentarios" },
 ];
 
@@ -28,6 +30,7 @@ const VIEWS = {
   maquinas:    <MaquinasClienteView />,
   horario:     <MiHorarioRecomendadoView />,
   plan:        <MiPlanView />,
+  reservas:    <ReservasView />,
   comentarios: <MisComentariosView />,
 };
 
