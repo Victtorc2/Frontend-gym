@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { C, heatColor } from "../styles/colors";
-import { Row, Btn, Input, Alert, Spinner, EmptyState, Modal, StatusBadge, PageHeader, Avatar } from "../components";
+import { Row, Btn, Input, Alert, Spinner, EmptyState, Modal, StatusBadge, PageHeader, Avatar, Pagination, paginate } from "../components";
 import api from "../services/api";
 
 export default function AsistenciasView() {
@@ -12,11 +12,12 @@ export default function AsistenciasView() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [lastResult, setLastResult] = useState(null);
+  const [page, setPage] = useState(1);
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await api.get("/api/asistencias?per_page=30");
+      const res = await api.get("/api/asistencias?per_page=300");
       setAtt(res.data?.items || []);
     } catch {}
     setLoading(false);
@@ -57,7 +58,7 @@ export default function AsistenciasView() {
 
       {loading ? <Spinner /> : att.length === 0 ? <EmptyState icon="activity" text="Sin registros de asistencia" /> : (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {att.map(a => {
+          {paginate(att, page).slice.map(a => {
             const aprobado = a.estado === "aprobado";
             return (
               <Row key={a.id}>
@@ -79,6 +80,7 @@ export default function AsistenciasView() {
               </Row>
             );
           })}
+          <Pagination {...paginate(att, page)} onPage={setPage} unit="asistencias" />
         </div>
       )}
 

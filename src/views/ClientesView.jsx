@@ -19,8 +19,8 @@ export default function ClientesView() {
     setLoading(true);
     try {
       const q = search
-        ? `/api/clientes/busqueda?nombre=${encodeURIComponent(search)}&per_page=20&page=${page}`
-        : `/api/clientes?per_page=20&page=${page}`;
+        ? `/api/clientes/busqueda?nombre=${encodeURIComponent(search)}&per_page=10&page=${page}`
+        : `/api/clientes?per_page=10&page=${page}`;
       const res = await api.get(q);
       setClients(res.data.items || []);
       setTotal(res.data.total || 0);
@@ -152,7 +152,7 @@ export default function ClientesView() {
                 fontSize: 13, fontWeight: 700, padding: "6px 14px", color: "#111",
                 background: "#FFD600", borderRadius: 8, fontFamily: "'Barlow Condensed', sans-serif",
               }}>Pág. {page}</span>
-              <Btn disabled={clients.length < 20} onClick={() => setPage(p => p + 1)}><i className="ti ti-arrow-right" /></Btn>
+              <Btn disabled={clients.length < 10} onClick={() => setPage(p => p + 1)}><i className="ti ti-arrow-right" /></Btn>
             </div>
           </div>
         </div>

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { C } from "../styles/colors";
-import { Card, Badge, Spinner, EmptyState, StatusBadge, PageHeader, StatCard, FilterSelect, FilterInput, Row, Avatar } from "../components";
+import { Card, Badge, Spinner, EmptyState, StatusBadge, PageHeader, StatCard, FilterSelect, FilterInput, Row, Avatar, Pagination, paginate } from "../components";
 import api from "../services/api";
 
 const actividadBadge = { activo: "success", poco_activo: "warning", inactivo: "neutral" };
@@ -19,6 +19,7 @@ export default function SegmentacionView() {
   const [loadingClientes, setLoadingClientes] = useState(true);
 
   const [filters, setFilters] = useState({ sexo: "", grupo_edad: "", segmento_actividad: "", segmento_financiero: "", edad_min: "", edad_max: "" });
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     api.get("/api/segmentacion/resumen")
@@ -42,6 +43,7 @@ export default function SegmentacionView() {
   }, [filters]);
 
   useEffect(() => { load(); }, [load]);
+  useEffect(() => { setPage(1); }, [filters]);
 
   const update = (key, value) => setFilters(f => ({ ...f, [key]: value }));
 
@@ -110,7 +112,7 @@ export default function SegmentacionView() {
 
       {loadingClientes ? <Spinner /> : clientes.length === 0 ? <EmptyState icon="chart-pie" text="No se encontraron clientes" /> : (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {clientes.map(c => (
+          {paginate(clientes, page).slice.map(c => (
             <Row key={c.cliente_id}>
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                 <Avatar>{(c.nombres[0] + c.apellidos[0]).toUpperCase()}</Avatar>
@@ -131,6 +133,7 @@ export default function SegmentacionView() {
               </div>
             </Row>
           ))}
+          <Pagination {...paginate(clientes, page)} onPage={setPage} unit="clientes" />
         </div>
       )}
     </div>

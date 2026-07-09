@@ -77,6 +77,9 @@ export default function Layout({ nav, views, auth, logout }) {
         }
         .ui-btn:active:not(:disabled) { transform: translateY(0); box-shadow: none; }
 
+        .dt-row { transition: background 0.12s; }
+        .dt-row:hover { background: rgba(255,214,0,0.07); }
+
         * { box-sizing: border-box; }
       `}</style>
 

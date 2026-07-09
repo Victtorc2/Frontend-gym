@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { C } from "../styles/colors";
-import { Card, Badge, Btn, Spinner, EmptyState, Modal, PageHeader, FilterSelect } from "../components";
+import { Card, Badge, Btn, Spinner, EmptyState, Modal, PageHeader, FilterSelect, Pagination, paginate } from "../components";
 import api from "../services/api";
 
 const TIPO_BADGE = { comentario: "info", sugerencia: "success", recomendacion: "info", queja: "danger" };
@@ -15,6 +15,7 @@ export default function ComentariosView() {
   const [tipo, setTipo] = useState("");
   const [estado, setEstado] = useState("");
   const [detail, setDetail] = useState(null);
+  const [page, setPage] = useState(1);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -29,6 +30,7 @@ export default function ComentariosView() {
     setLoading(false);
   }, [tipo, estado]);
   useEffect(() => { load(); }, [load]);
+  useEffect(() => { setPage(1); }, [tipo, estado]);
 
   const open = async (c) => {
     try { const res = await api.get(`/api/comentarios/${c.id}`); setDetail(res.data); load(); }
@@ -59,7 +61,7 @@ export default function ComentariosView() {
 
       {loading ? <Spinner /> : items.length === 0 ? <EmptyState icon="message-2" text="No hay comentarios" /> : (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {items.map(c => (
+          {paginate(items, page).slice.map(c => (
             <Card key={c.id} className="row-card" onClick={() => open(c)}
               style={{ cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, borderLeft: c.estado === "nuevo" ? "3px solid #ef4444" : "3px solid transparent" }}>
               <div style={{ flex: 1, minWidth: 0 }}>
@@ -75,6 +77,7 @@ export default function ComentariosView() {
               </div>
             </Card>
           ))}
+          <Pagination {...paginate(items, page)} onPage={setPage} unit="comentarios" />
         </div>
       )}
 

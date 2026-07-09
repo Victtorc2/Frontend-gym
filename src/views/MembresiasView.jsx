@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { C } from "../styles/colors";
-import { Row, Card, Badge, Btn, Input, Select, FilterSelect, Alert, Spinner, EmptyState, Modal, StatusBadge, PageHeader, Avatar } from "../components";
+import { Row, Card, Badge, Btn, Input, Select, FilterSelect, Alert, Spinner, EmptyState, Modal, StatusBadge, PageHeader, Avatar, Pagination, paginate } from "../components";
 import api from "../services/api";
 
 const tipoColor = { mensual: "info", anual: "success", diario: "warning" };
@@ -19,6 +19,7 @@ export default function MembresiasView() {
   const [tarjetasModal, setTarjetasModal] = useState(null); // { nombre } | null
   const [tarjetas, setTarjetas] = useState([]);
   const [tarjetasLoading, setTarjetasLoading] = useState(false);
+  const [page, setPage] = useState(1);
 
   // Cargar lista de clientes para mostrar nombres
   useEffect(() => {
@@ -55,6 +56,7 @@ export default function MembresiasView() {
   }, [filterTipo, filterEstado]);
 
   useEffect(() => { load(); }, [load]);
+  useEffect(() => { setPage(1); }, [filterTipo, filterEstado]);
 
   const save = async (e) => {
     e.preventDefault();
@@ -78,6 +80,8 @@ export default function MembresiasView() {
     } catch { setTarjetas([]); }
     setTarjetasLoading(false);
   };
+
+  const pg = paginate(mems, page);
 
   return (
     <div>
@@ -108,7 +112,7 @@ export default function MembresiasView() {
 
       {loading ? <Spinner /> : mems.length === 0 ? <EmptyState icon="id-badge" text="No se encontraron membresías" /> : (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {mems.map(m => {
+          {pg.slice.map(m => {
             const nombre = getNombreCliente(m.cliente_id);
             return (
               <Row key={m.id}>
@@ -133,6 +137,7 @@ export default function MembresiasView() {
               </Row>
             );
           })}
+          <Pagination page={pg.page} totalPages={pg.totalPages} total={pg.total} onPage={setPage} unit="membresías" />
         </div>
       )}
 

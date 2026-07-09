@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { C } from "../styles/colors";
-import { Row, Btn, Spinner, EmptyState, PageHeader, StatCard, DetailField } from "../components";
+import { Btn, Spinner, EmptyState, PageHeader, StatCard, DataTable, Pagination, paginate } from "../components";
 import api from "../services/api";
 
 const endpoints = {
@@ -17,7 +16,7 @@ const tabs = [
   { id: "membresias", label: "Membresías vigentes", icon: "id-badge" },
 ];
 
-const palette = ["#FFD600", "#42a5f5", "#66bb6a", "#ab47bc", "#26a69a", "#ef5350"];
+const palette = ["#FFD600", "#2563eb", "#16a34a", "#ab47bc", "#26a69a", "#e5484d"];
 
 const iconForKey = (k) => {
   if (k.includes("deuda") || k.includes("pendiente") || k.includes("vencid")) return "alert-triangle";
@@ -29,10 +28,47 @@ const iconForKey = (k) => {
 };
 
 const sectionTitle = {
-  fontSize: 14, fontWeight: 700, marginBottom: 8,
+  fontSize: 14, fontWeight: 700, marginBottom: 10,
   fontFamily: "'Barlow Condensed', sans-serif",
   textTransform: "uppercase", letterSpacing: "0.04em",
 };
+
+const fmt = (v) => {
+  if (v === null || v === undefined || v === "") return "—";
+  if (typeof v === "boolean") return v ? "Sí" : "No";
+  if (typeof v === "object") return JSON.stringify(v);
+  return String(v);
+};
+
+// Tabla de un reporte con su propia paginación (10 filas)
+function ReportTable({ title, rows }) {
+  const [page, setPage] = useState(1);
+  useEffect(() => { setPage(1); }, [rows]);
+
+  if (!rows || rows.length === 0) {
+    return (
+      <div style={{ marginBottom: 24 }}>
+        <h3 style={sectionTitle}>{title}</h3>
+        <EmptyState icon="inbox" text="Sin registros" />
+      </div>
+    );
+  }
+
+  const columns = Object.keys(rows[0]).map(k => ({
+    key: k,
+    label: k.replace(/_/g, " "),
+    render: (v) => fmt(v),
+  }));
+  const pg = paginate(rows, page);
+
+  return (
+    <div style={{ marginBottom: 24 }}>
+      <h3 style={sectionTitle}>{title} ({rows.length})</h3>
+      <DataTable columns={columns} rows={pg.slice} />
+      <Pagination {...pg} onPage={setPage} unit="registros" />
+    </div>
+  );
+}
 
 export default function ReportesView() {
   const [tab, setTab] = useState("activos");
@@ -62,31 +98,13 @@ export default function ReportesView() {
         {scalarEntries.length > 0 && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16, marginBottom: 24 }}>
             {scalarEntries.map(([k, v], i) => (
-              <StatCard key={k} icon={iconForKey(k)} label={k.replace(/_/g, " ")} value={String(v)} color={palette[i % palette.length]} />
+              <StatCard key={k} icon={iconForKey(k)} label={k.replace(/_/g, " ")} value={fmt(v)} color={palette[i % palette.length]} />
             ))}
           </div>
         )}
 
         {arrayEntries.map(([k, v]) => (
-          <div key={k} style={{ marginBottom: 24 }}>
-            <h3 style={sectionTitle}>{k.replace(/_/g, " ")} ({v.length})</h3>
-            {v.length === 0 ? <EmptyState icon="inbox" text="Sin registros" /> : (
-              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {v.slice(0, 15).map((item, i) => (
-                  <Row key={i}>
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: 12, width: "100%" }}>
-                      {Object.entries(item).map(([fk, fv]) => (
-                        <DetailField key={fk} label={fk.replace(/_/g, " ")} value={typeof fv === "object" && fv !== null ? JSON.stringify(fv) : String(fv)} />
-                      ))}
-                    </div>
-                  </Row>
-                ))}
-                {v.length > 15 && (
-                  <p style={{ fontSize: 12, color: C.textSec, textAlign: "center", margin: "4px 0 0" }}>... y {v.length - 15} más</p>
-                )}
-              </div>
-            )}
-          </div>
+          <ReportTable key={k} title={k.replace(/_/g, " ")} rows={v} />
         ))}
       </>
     );
@@ -94,7 +112,7 @@ export default function ReportesView() {
 
   return (
     <div>
-      <PageHeader icon="report-analytics" title="Reportes" subtitle="Informes detallados del sistema" />
+      <PageHeader icon="report-analytics" title="Reportes" subtitle="Informes detallados del sistema en formato de tabla" />
 
       <div style={{ display: "flex", gap: 8, marginBottom: "1.5rem", flexWrap: "wrap" }}>
         {tabs.map(t => (

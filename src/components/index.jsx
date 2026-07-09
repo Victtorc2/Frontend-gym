@@ -445,3 +445,68 @@ export const Modal = ({ title, onClose, children, width = 500 }) => (
     </div>
   </div>
 );
+
+// ─── Paginación (cliente) ───────────────────────────────────────────────────
+export const PAGE_SIZE = 10;
+
+// Devuelve la porción de la página y metadatos. Uso: const { slice, totalPages, total } = paginate(items, page)
+export const paginate = (arr, page, size = PAGE_SIZE) => {
+  const list = Array.isArray(arr) ? arr : [];
+  const totalPages = Math.max(1, Math.ceil(list.length / size));
+  const p = Math.min(Math.max(1, page), totalPages);
+  return { slice: list.slice((p - 1) * size, p * size), totalPages, total: list.length, page: p };
+};
+
+export const Pagination = ({ page, totalPages, total, onPage, unit = "registros" }) => {
+  if (totalPages <= 1) {
+    return total != null ? (
+      <div style={{ marginTop: 14, fontSize: 13, color: C.textSec }}>{total} {unit}</div>
+    ) : null;
+  }
+  return (
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 16, flexWrap: "wrap", gap: 10 }}>
+      <span style={{ fontSize: 13, color: C.textSec }}>{total != null ? `${total} ${unit}` : ""}</span>
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <Btn disabled={page <= 1} onClick={() => onPage(page - 1)}><i className="ti ti-chevron-left" /></Btn>
+        <span style={{
+          fontSize: 13, fontWeight: 700, padding: "7px 14px", color: "#111",
+          background: "#FFD600", borderRadius: 8, fontFamily: "'Barlow Condensed', sans-serif",
+        }}>{page} / {totalPages}</span>
+        <Btn disabled={page >= totalPages} onClick={() => onPage(page + 1)}><i className="ti ti-chevron-right" /></Btn>
+      </div>
+    </div>
+  );
+};
+
+// ─── Tabla de datos ─────────────────────────────────────────────────────────
+export const DataTable = ({ columns, rows }) => (
+  <div style={{ overflowX: "auto", border: `1px solid ${C.border}`, borderRadius: 14, background: C.bg, boxShadow: "var(--shadow-card)" }}>
+    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 480 }}>
+      <thead>
+        <tr>
+          {columns.map(c => (
+            <th key={c.key} style={{
+              textAlign: c.align || "left", padding: "11px 14px",
+              background: C.bgSec, color: C.textSec, fontSize: 11, fontWeight: 700,
+              textTransform: "uppercase", letterSpacing: "0.05em",
+              fontFamily: "'Barlow Condensed', sans-serif", whiteSpace: "nowrap",
+              borderBottom: `1px solid ${C.border}`,
+            }}>{c.label}</th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((r, i) => (
+          <tr key={i} className="dt-row">
+            {columns.map(c => (
+              <td key={c.key} style={{
+                textAlign: c.align || "left", padding: "10px 14px",
+                borderTop: `1px solid ${C.border}`, color: C.text, whiteSpace: "nowrap",
+              }}>{c.render ? c.render(r[c.key], r) : (r[c.key] ?? "—")}</td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+);
