@@ -19,14 +19,25 @@ const statLabel = { fontSize: 12, color: C.textSec, textTransform: "uppercase", 
 
 const hora = (t) => (typeof t === "string" ? t.slice(0, 5) : t);
 
+// Día de la semana de hoy mapeado al id del backend (domingo → lunes, gym cerrado)
+const DIA_HOY = ["lunes", "lunes", "martes", "miercoles", "jueves", "viernes", "sabado"][new Date().getDay()];
+const cap = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
+
 export default function RecomendacionesView() {
+  // Reloj en tiempo real (se actualiza cada segundo)
+  const [now, setNow] = useState(new Date());
+  useEffect(() => {
+    const t = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(t);
+  }, []);
+
   const [stats, setStats] = useState(null);
   const [loadingStats, setLoadingStats] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [genMessage, setGenMessage] = useState("");
   const [genError, setGenError] = useState("");
 
-  const [dia, setDia] = useState("lunes");
+  const [dia, setDia] = useState(DIA_HOY);
   const [schedule, setSchedule] = useState(null);
   const [loadingSchedule, setLoadingSchedule] = useState(true);
   const [scheduleError, setScheduleError] = useState("");
@@ -87,6 +98,29 @@ export default function RecomendacionesView() {
         }
       />
 
+      {/* Fecha y hora de hoy, en tiempo real */}
+      <div style={{
+        display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap",
+        background: C.bg, border: `1px solid ${C.border}`, borderLeft: "4px solid #FFD600",
+        borderRadius: 14, padding: "0.9rem 1.2rem", marginBottom: 18, boxShadow: "var(--shadow-card)",
+      }}>
+        <div style={{ width: 42, height: 42, borderRadius: 11, background: "linear-gradient(135deg,#FFD600,#FF9900)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <i className="ti ti-calendar-event" style={{ fontSize: 22, color: "#111" }} />
+        </div>
+        <div style={{ flex: 1, minWidth: 180 }}>
+          <div style={{ fontSize: 11, color: C.textSec, textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 700, fontFamily: "'Barlow Condensed', sans-serif" }}>Hoy es</div>
+          <div style={{ fontSize: 18, fontWeight: 700, color: C.text, textTransform: "capitalize" }}>
+            {cap(now.toLocaleDateString("es-PE", { weekday: "long", day: "numeric", month: "long", year: "numeric" }))}
+          </div>
+        </div>
+        <div style={{ textAlign: "right" }}>
+          <div style={{ fontSize: 11, color: C.textSec, textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 700, fontFamily: "'Barlow Condensed', sans-serif" }}>Hora actual</div>
+          <div style={{ fontSize: 26, fontWeight: 800, color: C.text, fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: "0.02em", fontVariantNumeric: "tabular-nums" }}>
+            {now.toLocaleTimeString("es-PE", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
+          </div>
+        </div>
+      </div>
+
       {genMessage && <Alert type="success">{genMessage}</Alert>}
       {genError && <Alert>{genError}</Alert>}
 
@@ -137,6 +171,9 @@ export default function RecomendacionesView() {
             onClick={() => setDia(d.id)}
           >
             {d.label}
+            {d.id === DIA_HOY && (
+              <span style={{ marginLeft: 6, fontSize: 10, fontWeight: 800, padding: "1px 6px", borderRadius: 6, background: dia === d.id ? "rgba(255,255,255,0.25)" : "#FFD600", color: dia === d.id ? "#fff" : "#111", letterSpacing: "0.04em" }}>HOY</span>
+            )}
           </Btn>
         ))}
       </div>
