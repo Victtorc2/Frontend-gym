@@ -71,7 +71,7 @@ export default function MiPlanView() {
             <p style={{ margin: "2px 0 0", fontSize: 13, color: C.textSec }}>Dinos a qué hora para ayudarnos a controlar la afluencia.</p>
           </div>
           <input type="time" value={checkinHora} onChange={e => setCheckinHora(e.target.value)} style={fieldInput} />
-          <Btn variant="primary" loading={checkinLoading} onClick={doCheckin}><i className="ti ti-check" /> Confirmar asistencia de hoy</Btn>
+          <Btn variant="success" loading={checkinLoading} onClick={doCheckin}><i className="ti ti-check" /> Confirmar asistencia de hoy</Btn>
         </Card>
       )}
 
@@ -107,8 +107,8 @@ export default function MiPlanView() {
           )}
 
           <div style={{ display: "flex", gap: 8, marginTop: 14, flexWrap: "wrap" }}>
-            {plan.estado === "planeado" && <Btn variant="primary" onClick={() => cambiarEstado("confirmado")}><i className="ti ti-check" /> Confirmar asistencia</Btn>}
-            {plan.estado === "confirmado" && <Btn variant="primary" onClick={() => cambiarEstado("en_camino")}><i className="ti ti-walk" /> Voy en camino</Btn>}
+            {plan.estado === "planeado" && <Btn variant="success" onClick={() => cambiarEstado("confirmado")}><i className="ti ti-check" /> Confirmar asistencia</Btn>}
+            {plan.estado === "confirmado" && <Btn variant="info" onClick={() => cambiarEstado("en_camino")}><i className="ti ti-walk" /> Voy en camino</Btn>}
             {plan.estado !== "cancelado" && <Btn onClick={() => cambiarEstado("cancelado")}>Cancelar asistencia</Btn>}
             <Btn variant="danger" onClick={eliminar}><i className="ti ti-trash" /> Eliminar plan</Btn>
           </div>

@@ -70,6 +70,13 @@ export default function Layout({ nav, views, auth, logout }) {
           color: #FFD600 !important;
         }
 
+        .ui-btn:hover:not(:disabled) {
+          transform: translateY(-1px);
+          box-shadow: 0 6px 16px rgba(20,20,15,0.14);
+          filter: brightness(1.05);
+        }
+        .ui-btn:active:not(:disabled) { transform: translateY(0); box-shadow: none; }
+
         * { box-sizing: border-box; }
       `}</style>
 

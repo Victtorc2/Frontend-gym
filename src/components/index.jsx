@@ -40,9 +40,9 @@ export const Card = ({ children, style, className }) => (
   <div className={className} style={{
     background: C.bg,
     border: `1px solid ${C.border}`,
-    borderRadius: 12,
+    borderRadius: 16,
     padding: "1.25rem",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+    boxShadow: "var(--shadow-card)",
     ...style,
   }}>
     {children}
@@ -235,29 +235,32 @@ export const FilterInput = ({ style, ...props }) => (
 
 // ─── Btn ──────────────────────────────────────────────────────────────────────
 export const Btn = ({ children, onClick, type = "button", variant = "default", loading, disabled, style, className }) => {
-  const styles = {
-    default: { background: C.bgSec, color: C.text, border: `1px solid ${C.borderSec}` },
-    primary: { background: "#FFD600", color: "#111", border: "none", fontWeight: 700 },
-    danger:  { background: "#f87171", color: "#1a1a1a", border: "none", fontWeight: 700 },
+  const variants = {
+    default: { background: C.bg, color: C.text, border: `1px solid ${C.borderSec}` },
+    primary: { background: "var(--btn-primary)", color: "#fff", border: "none" },   // acción principal (negro)
+    accent:  { background: "var(--btn-accent)",  color: "#111", border: "none" },   // amarillo de marca
+    success: { background: "var(--btn-success)", color: "#fff", border: "none" },   // confirmar / completar
+    info:    { background: "var(--btn-info)",    color: "#fff", border: "none" },   // ver / reservar
+    danger:  { background: "var(--btn-danger)",  color: "#fff", border: "none" },   // eliminar / cancelar
   };
   return (
     <button
       type={type}
       onClick={onClick}
       disabled={disabled || loading}
-      className={className}
+      className={`ui-btn${className ? " " + className : ""}`}
       style={{
-        padding: "8px 16px",
-        borderRadius: 8,
+        padding: "9px 16px",
+        borderRadius: 10,
         fontSize: 13,
         fontWeight: 600,
         cursor: disabled || loading ? "not-allowed" : "pointer",
         display: "inline-flex",
         alignItems: "center",
-        gap: 6,
-        opacity: disabled ? 0.5 : 1,
-        transition: "opacity 0.15s",
-        ...styles[variant],
+        gap: 7,
+        opacity: disabled ? 0.55 : 1,
+        transition: "transform .14s, box-shadow .14s, filter .14s",
+        ...(variants[variant] || variants.default),
         ...style,
       }}
     >
@@ -390,16 +393,16 @@ export const EmptyState = ({ icon, text }) => (
 export const Modal = ({ title, onClose, children, width = 500 }) => (
   <div style={{
     position: "fixed", inset: 0,
-    background: "rgba(0,0,0,0.6)",
-    backdropFilter: "blur(2px)",
+    background: "rgba(20,20,15,0.45)",
+    backdropFilter: "blur(3px)",
     display: "flex", alignItems: "center", justifyContent: "center",
     zIndex: 1000, padding: "1rem",
   }}>
     <div style={{
       background: C.bg,
-      borderRadius: 16,
+      borderRadius: 18,
       border: `1px solid ${C.border}`,
-      boxShadow: "0 20px 60px rgba(0,0,0,0.15)",
+      boxShadow: "0 24px 70px rgba(20,20,15,0.22)",
       width: "100%", maxWidth: width,
       maxHeight: "90vh", overflow: "auto",
     }}>
@@ -407,29 +410,33 @@ export const Modal = ({ title, onClose, children, width = 500 }) => (
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: "1rem 1.25rem",
+        padding: "1.1rem 1.35rem",
         borderBottom: `1px solid ${C.border}`,
-        background: "#FFD600",
-        borderRadius: "16px 16px 0 0",
+        background: C.bg,
+        borderRadius: "18px 18px 0 0",
+        position: "sticky", top: 0, zIndex: 2,
       }}>
         <h2 style={{
           margin: 0,
           fontSize: 18,
           fontWeight: 800,
           fontFamily: "'Barlow Condensed', sans-serif",
-          color: "#111",
+          color: C.text,
           letterSpacing: "0.02em",
+          display: "flex", alignItems: "center", gap: 11,
         }}>
+          <span style={{ width: 4, height: 18, background: "#FFD600", borderRadius: 3, display: "inline-block" }} />
           {title?.toUpperCase()}
         </h2>
         <button onClick={onClose} style={{
-          background: "rgba(0,0,0,0.1)",
-          border: "none",
+          background: C.bgSec,
+          border: `1px solid ${C.border}`,
           cursor: "pointer",
-          color: "#111",
+          color: C.textSec,
           fontSize: 16,
-          padding: "4px 8px",
-          borderRadius: 6,
+          padding: "5px 9px",
+          borderRadius: 8,
+          display: "inline-flex",
         }}>
           <i className="ti ti-x" />
         </button>

@@ -186,7 +186,7 @@ export default function PagosView() {
                       </div>
                     </div>
                     {Number(p.saldo_pendiente) > 0 && (
-                      <Btn variant="primary" onClick={() => openAbono(p)}><i className="ti ti-cash" /> Completar</Btn>
+                      <Btn variant="success" onClick={() => openAbono(p)}><i className="ti ti-cash" /> Completar</Btn>
                     )}
                   </Row>
                 );
@@ -302,7 +302,7 @@ export default function PagosView() {
             {abonoError && <Alert>{abonoError}</Alert>}
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
               <Btn onClick={() => setAbono(null)}>Cancelar</Btn>
-              <Btn type="submit" variant="primary" loading={abonoSaving}>Registrar abono</Btn>
+              <Btn type="submit" variant="success" loading={abonoSaving}>Registrar abono</Btn>
             </div>
           </form>
         </Modal>

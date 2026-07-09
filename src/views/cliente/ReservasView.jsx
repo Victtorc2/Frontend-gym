@@ -115,7 +115,7 @@ export default function ReservasView() {
                     </div>
                   )}
                 </div>
-                <Btn variant="primary" onClick={() => openReservar(m)}><i className="ti ti-clock-plus" /> Reservar</Btn>
+                <Btn variant="info" onClick={() => openReservar(m)}><i className="ti ti-clock-plus" /> Reservar</Btn>
               </div>
             </Card>
           ))}
@@ -146,7 +146,7 @@ export default function ReservasView() {
             {error && <Alert>{error}</Alert>}
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
               <Btn onClick={() => setModal(null)}>Cancelar</Btn>
-              <Btn type="submit" variant="primary" loading={saving}>Reservar</Btn>
+              <Btn type="submit" variant="info" loading={saving}>Reservar</Btn>
             </div>
           </form>
         </Modal>
