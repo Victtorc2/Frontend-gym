@@ -110,9 +110,41 @@ export default function ReportesView() {
     );
   };
 
+  const currentLabel = tabs.find(t => t.id === tab)?.label || "Reporte";
+  const canExport = !loading && data && Object.keys(data).length > 0;
+  const [exporting, setExporting] = useState("");
+
+  // Carga diferida de las librerías de exportación (solo al pulsar el botón).
+  const exportar = async (kind) => {
+    if (!canExport) return;
+    setExporting(kind);
+    try {
+      const mod = await import("../services/export");
+      if (kind === "pdf") mod.reportToPDF(currentLabel, data);
+      else mod.reportToExcel(currentLabel, data);
+    } catch (e) {
+      alert("No se pudo generar el archivo: " + e.message);
+    }
+    setExporting("");
+  };
+
   return (
     <div>
-      <PageHeader icon="report-analytics" title="Reportes" subtitle="Informes detallados del sistema en formato de tabla" />
+      <PageHeader
+        icon="report-analytics"
+        title="Reportes"
+        subtitle="Informes detallados del sistema en formato de tabla"
+        actions={
+          <>
+            <Btn variant="danger" disabled={!canExport} loading={exporting === "pdf"} onClick={() => exportar("pdf")}>
+              <i className="ti ti-file-type-pdf" /> PDF
+            </Btn>
+            <Btn variant="success" disabled={!canExport} loading={exporting === "excel"} onClick={() => exportar("excel")}>
+              <i className="ti ti-file-type-xls" /> Excel
+            </Btn>
+          </>
+        }
+      />
 
       <div style={{ display: "flex", gap: 8, marginBottom: "1.5rem", flexWrap: "wrap" }}>
         {tabs.map(t => (
