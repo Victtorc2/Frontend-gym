@@ -38,7 +38,8 @@ export default function LoginView({ onLogin }) {
         }
         .login-hero img {
           position: absolute; inset: 0; width: 100%; height: 100%;
-          object-fit: cover; filter: grayscale(18%) contrast(1.03);
+          object-fit: cover; object-position: center 72%;
+          filter: grayscale(18%) contrast(1.03);
         }
         .login-hero .veil {
           position: absolute; inset: 0;
