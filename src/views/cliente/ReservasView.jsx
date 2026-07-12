@@ -8,6 +8,16 @@ const DURACIONES = [15, 30, 45, 60, 90, 120];
 const today = () => new Date().toISOString().slice(0, 10);
 const dateInput = { padding: "8px 12px", borderRadius: 8, border: `1.5px solid ${C.borderSec}`, background: C.bgSec, color: C.text, fontSize: 13 };
 
+// Color del badge de un tramo: verde si es tuyo, rojo si está lleno, ámbar si quedan libres.
+const tramoType = (t) => (t.es_mia ? "success" : t.libres === 0 ? "danger" : "warning");
+// Texto del tramo: muestra la capacidad restante cuando la máquina tiene varias unidades.
+const tramoLabel = (t, cantidad) => {
+  const rango = `${t.hora_inicio}–${t.hora_fin}`;
+  if (t.es_mia) return `${rango} · Tú`;
+  if (t.libres === 0) return `${rango} · ${cantidad > 1 ? "Lleno" : "Ocupado"}`;
+  return `${rango} · ${t.libres}/${cantidad} libres`;
+};
+
 export default function ReservasView() {
   const [fecha, setFecha] = useState(today());
   const [zona, setZona] = useState("");
@@ -103,14 +113,14 @@ export default function ReservasView() {
                 </div>
                 <div style={{ flex: 1 }}>
                   <p style={{ margin: "0 0 4px", fontSize: 11, color: C.textSec, textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                    Franjas ocupadas ({m.cantidad} unid.)
+                    {m.cantidad > 1 ? `Disponibilidad · ${m.cantidad} unidades` : "Disponibilidad"}
                   </p>
-                  {m.reservas.length === 0 ? (
+                  {m.tramos.length === 0 ? (
                     <span style={{ fontSize: 12, color: "#15803d" }}><i className="ti ti-circle-check" /> Todo libre</span>
                   ) : (
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
-                      {m.reservas.map((r, i) => (
-                        <Badge key={i} type={r.es_mia ? "success" : "neutral"}>{r.hora_inicio}-{r.hora_fin}</Badge>
+                      {m.tramos.map((t, i) => (
+                        <Badge key={i} type={tramoType(t)}>{tramoLabel(t, m.cantidad)}</Badge>
                       ))}
                     </div>
                   )}
@@ -125,11 +135,15 @@ export default function ReservasView() {
       {modal && (
         <Modal title={`Reservar: ${modal.nombre}`} onClose={() => setModal(null)} width={420}>
           <form onSubmit={reservar} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {modal.reservas.length > 0 && (
+            {modal.tramos.length > 0 && (
               <div>
-                <p style={{ margin: "0 0 6px", fontSize: 12, color: C.textSec }}>Ya reservado ({modal.cantidad} unid. disponibles a la vez):</p>
+                <p style={{ margin: "0 0 6px", fontSize: 12, color: C.textSec }}>
+                  {modal.cantidad > 1
+                    ? `Ocupación actual (${modal.cantidad} unidades a la vez):`
+                    : "Franjas ya reservadas:"}
+                </p>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
-                  {modal.reservas.map((r, i) => <Badge key={i} type="neutral">{r.hora_inicio}-{r.hora_fin}</Badge>)}
+                  {modal.tramos.map((t, i) => <Badge key={i} type={tramoType(t)}>{tramoLabel(t, modal.cantidad)}</Badge>)}
                 </div>
               </div>
             )}
