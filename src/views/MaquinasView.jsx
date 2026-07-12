@@ -8,6 +8,8 @@ const TABS = [
   { id: "operativas", label: "Operativas", icon: "circle-check" },
   { id: "mantenimiento", label: "Mantenimiento", icon: "tools" },
 ];
+const today = () => new Date().toISOString().slice(0, 10);
+const dateInput = { padding: "8px 12px", borderRadius: 8, border: `1.5px solid ${C.borderSec}`, background: C.bgSec, color: C.text, fontSize: 13 };
 
 export default function MaquinasView() {
   const [tab, setTab] = useState("operativas");
@@ -21,6 +23,11 @@ export default function MaquinasView() {
   const [uploading, setUploading] = useState(null);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  // Reservas (control admin) por máquina
+  const [reservasModal, setReservasModal] = useState(null); // máquina | null
+  const [reservas, setReservas] = useState([]);
+  const [reservasLoading, setReservasLoading] = useState(false);
+  const [reservasFecha, setReservasFecha] = useState(today());
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -70,6 +77,19 @@ export default function MaquinasView() {
     if (!confirm(`¿ELIMINAR definitivamente la máquina "${m.nombre}"? (distinto de mantenimiento)`)) return;
     try { await api.del(`/api/maquinas/${m.id}`); load(); } catch (err) { alert(err.message); }
   };
+
+  const loadReservas = useCallback(async (machineId, fecha) => {
+    setReservasLoading(true);
+    try {
+      const qs = fecha ? `?fecha=${fecha}` : "";
+      const res = await api.get(`/api/maquinas/${machineId}/reservas${qs}`);
+      setReservas(res.data || []);
+    } catch { setReservas([]); }
+    setReservasLoading(false);
+  }, []);
+
+  const openReservas = (m) => { setReservasModal(m); setReservasFecha(today()); loadReservas(m.id, today()); };
+  const changeReservasFecha = (fecha) => { setReservasFecha(fecha); if (reservasModal) loadReservas(reservasModal.id, fecha); };
 
   return (
     <div>
@@ -122,6 +142,7 @@ export default function MaquinasView() {
                   <span style={{ fontSize: 13, color: C.textSec }}><i className="ti ti-stack-2" /> {m.cantidad} unid.</span>
                 </div>
                 <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "flex-end", gap: 6 }}>
+                  <Btn onClick={() => openReservas(m)}><i className="ti ti-calendar-event" /> Reservas</Btn>
                   <Btn onClick={() => openEdit(m)}><i className="ti ti-edit" /> Editar</Btn>
                   <Btn onClick={() => toggleMantenimiento(m)} variant={m.activa ? "default" : "primary"}>
                     <i className={`ti ti-${m.activa ? "tool" : "circle-check"}`} /> {m.activa ? "A mantenimiento" : "Reactivar"}
@@ -132,6 +153,50 @@ export default function MaquinasView() {
             </Card>
           ))}
         </div>
+      )}
+
+      {reservasModal && (
+        <Modal title={`Reservas: ${reservasModal.nombre}`} onClose={() => setReservasModal(null)} width={560}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+              <span style={{ fontSize: 13, color: C.textSec }}>Fecha:</span>
+              <input type="date" value={reservasFecha} onChange={e => changeReservasFecha(e.target.value)} style={dateInput} />
+              {reservasFecha && <Btn onClick={() => changeReservasFecha("")}><i className="ti ti-x" /> Todas</Btn>}
+              <span style={{ marginLeft: "auto", fontSize: 12, color: C.textSec }}>
+                {reservas.length} reserva{reservas.length === 1 ? "" : "s"} · {reservasModal.cantidad} unid.
+              </span>
+            </div>
+
+            {reservasLoading ? <Spinner /> : reservas.length === 0 ? (
+              <EmptyState icon="calendar-off" text="Sin reservas para este filtro" />
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {reservas.map(r => (
+                  <div key={r.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, padding: "8px 10px", borderRadius: 8, background: C.bgSec }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                      <span style={{ fontWeight: 700, fontSize: 14 }}>
+                        <i className="ti ti-clock" style={{ marginRight: 4 }} />{r.hora_inicio}–{r.hora_fin}
+                        <span style={{ fontWeight: 400, color: C.textSec, marginLeft: 6 }}>({r.duracion_min}m)</span>
+                      </span>
+                      <span style={{ fontSize: 13 }}>
+                        <i className="ti ti-user" style={{ marginRight: 4, color: C.textSec }} />
+                        {r.cliente_nombre}{r.cliente_dni ? ` · DNI ${r.cliente_dni}` : ""}
+                      </span>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
+                      <Badge type={r.estado === "activa" ? "success" : "neutral"}>{r.estado}</Badge>
+                      {!reservasFecha && <span style={{ fontSize: 11, color: C.textSec }}>{r.fecha}</span>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <Btn onClick={() => setReservasModal(null)}>Cerrar</Btn>
+            </div>
+          </div>
+        </Modal>
       )}
 
       {modal && (
