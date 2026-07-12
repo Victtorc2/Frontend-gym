@@ -16,10 +16,13 @@ export default function AsistenciasView() {
 
   const load = useCallback(async () => {
     setLoading(true);
+    setError("");
     try {
-      const res = await api.get("/api/asistencias?per_page=300");
+      const res = await api.get("/api/asistencias?per_page=100");
       setAtt(res.data?.items || []);
-    } catch {}
+    } catch (err) {
+      setError(err?.message || "No se pudo cargar el listado de asistencias");
+    }
     setLoading(false);
   }, []);
 
