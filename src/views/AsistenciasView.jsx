@@ -62,7 +62,7 @@ export default function AsistenciasView() {
       {loading ? <Spinner /> : att.length === 0 ? <EmptyState icon="activity" text="Sin registros de asistencia" /> : (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {paginate(att, page).slice.map(a => {
-            const aprobado = a.estado === "aprobado";
+            const aprobado = a.estado === "ingreso_aprobado";
             return (
               <Row key={a.id}>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -71,7 +71,7 @@ export default function AsistenciasView() {
                   </Avatar>
                   <div>
                     <div style={{ display: "flex", gap: 8, marginBottom: 4, alignItems: "center" }}>
-                      <span style={{ fontWeight: 600, fontSize: 14 }}>Cliente #{a.cliente_id}</span>
+                      <span style={{ fontWeight: 600, fontSize: 14 }}>{a.nombre_cliente || `Cliente #${a.cliente_id}`}</span>
                       <StatusBadge estado={a.estado} />
                     </div>
                     <p style={{ margin: 0, fontSize: 12, color: C.textSec }}>
