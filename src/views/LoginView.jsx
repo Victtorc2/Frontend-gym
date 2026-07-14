@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { C } from "../styles/colors";
 import api from "../services/api";
-import loginImg from "../assets/login-gym.jpg";
+import loginImg from "../assets/login-gym.png";
 
 export default function LoginView({ onLogin }) {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -119,7 +119,7 @@ export default function LoginView({ onLogin }) {
           <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 18 }}>
             <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
               <label style={{ fontSize: 12.5, color: C.textSec, fontWeight: 600 }}>Correo electrónico</label>
-              <input className="login-field" type="email" placeholder="tucorreo@gym.com"
+              <input className="login-field" type="email" placeholder="tucorreo@hotmail.com"
                 value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} required autoFocus />
             </div>
 
