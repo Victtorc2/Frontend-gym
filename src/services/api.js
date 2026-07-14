@@ -1,4 +1,6 @@
-export const API_BASE = "http://localhost:8000";
+// En producción se toma de la variable de entorno VITE_API_URL (definida en Vercel).
+// En local, si no está definida, usa el backend local por defecto.
+export const API_BASE = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
 // Construye la URL absoluta de un recurso servido por el backend (ej. foto de máquina).
 export const mediaUrl = (path) => (path ? `${API_BASE}${path}` : null);
